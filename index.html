@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI Advanced Checklist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================================
+           CSS Variables & Theming (Apple Design Language)
+           ========================================================= */
+        :root {
+            /* Light Theme Colors */
+            --bg-color: #F5F5F7;
+            --surface-color: #FFFFFF;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --accent-color: #0071E3;
+            --accent-hover: #0077ED;
+            --border-color: #D2D2D7;
+            --success-color: #34C759;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            
+            /* Typography */
+            --font-ar: 'Almarai', sans-serif;
+            --font-en: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Colors */
+            --bg-color: #000000;
+            --surface-color: #1C1C1E;
+            --text-primary: #F5F5F7;
+            --text-secondary: #A1A1A6;
+            --border-color: #38383A;
+            --glass-bg: rgba(28, 28, 30, 0.7);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        /* =========================================================
+           Global Styles
+           ========================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-ar);
+            line-height: 1.6;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[dir="ltr"] body {
+            font-family: var(--font-en);
+        }
+
+        /* =========================================================
+           Loading Animation
+           ========================================================= */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* =========================================================
+           Navbar (Glassmorphism)
+           ========================================================= */
+        header {
+            position: sticky;
+            top: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all var(--transition-speed);
+        }
+
+        .brand h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--border-color);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: #FFF;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        /* =========================================================
+           Hero & Dashboard
+           ========================================================= */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .dashboard {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            transition: all var(--transition-speed);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .progress-track {
+            height: 12px;
+            background: var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0%;
+            border-radius: 6px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-bar:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2);
+        }
+
+        /* =========================================================
+           Checklist Sections & Items
+           ========================================================= */
+        .section {
+            background: var(--surface-color);
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all var(--transition-speed);
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface-color);
+            user-select: none;
+        }
+
+        .section-header h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .section-body {
+            display: none;
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        .section.active .section-body {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+        .section.active .chevron {
+            transform: rotate(180deg);
+        }
+
+        .item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .item:hover {
+            opacity: 0.8;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .item.completed .checkbox {
+            background: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .item.completed .checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .item-text {
+            flex-grow: 1;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .item-domain {
+            display: inline-block;
+            font-size: 0.75rem;
+            background: var(--bg-color);
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .item.completed .item-text p {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        /* =========================================================
+           Floating Back to Top
+           ========================================================= */
+        #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        html[dir="rtl"] #back-to-top {
+            right: auto;
+            left: 2rem;
+        }
+
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* =========================================================
+           Animations
+           ========================================================= */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* =========================================================
+           Responsive
+           ========================================================= */
+        @media (max-width: 768px) {
+            header { padding: 1rem; flex-direction: column; gap: 1rem; }
+            .hero h2 { font-size: 2rem; }
+            .section-header { padding: 1rem; }
+            .section-body { padding: 0 1rem 1rem 1rem; }
+        }
+
+        /* =========================================================
+           Print Styles
+           ========================================================= */
+        @media print {
+            header, .dashboard, #back-to-top { display: none !important; }
+            body { background: white; color: black; }
+            .section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+            .section-body { display: block !important; } /* Open all for print */
+        }
+            /* قائمة التنقل الجانبية */
+.side-nav {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 900;
+    background: var(--glass-bg);
+    padding: 15px 10px;
+    border-radius: 30px;
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+/* اتجاه القائمة في العربي (يسار) */
+html[dir="rtl"] .side-nav {
+    right: auto;
+    left: 20px;
+}
+
+.nav-dot {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--surface-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.2rem;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+.nav-dot:hover {
+    transform: scale(1.2);
+    background: var(--accent-color);
+    color: white;
+}
+
+/* النص التوضيحي عند الوقوف على الأيقونة */
+.nav-dot::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 55px;
+    background: var(--text-primary);
+    color: var(--surface-color);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+html[dir="rtl"] .nav-dot::after {
+    right: auto;
+    left: 55px;
+}
+
+.nav-dot:hover::after {
+    opacity: 1;
+}
+
+/* تمييز القسم النشط */
+.nav-dot.active {
+    background: var(--accent-color);
+    color: white;
+    box-shadow: 0 0 15px rgba(0, 113, 227, 0.4);
+}
+
+/* إخفاء القائمة في الشاشات الصغيرة جداً */
+@media (max-width: 600px) {
+    .side-nav { display: none; }
+}
+/* شريط التنقل العلوي للمواضيع */
+.topics-nav {
+    position: sticky;
+    top: 70px; /* يظهر تحت الهيدر الأساسي */
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 999;
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    transition: all var(--transition-speed);
+}
+
+.topic-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.topic-link:hover {
+    background: var(--surface-color);
+    border-color: var(--border-color);
+}
+
+.topic-link.active {
+    background: var(--accent-color);
+    color: #FFF;
+    box-shadow: var(--shadow-sm);
+}
+
+.topic-icon {
+    font-size: 1.1rem;
+}
+
+/* إخفاء القائمة الجانبية القديمة إذا أردت الاعتماد على العلوية فقط، 
+   أو اتركها كما هي لتعملان معاً */
+@media (max-width: 768px) {
+    .topic-link span { display: none; } /* إخفاء النص في الجوال والبقاء على الأيقونة */
+    .topics-nav { top: 120px; } /* تعديل الإزاحة للجوال */
+}
+    </style>
+</head>
+<body>
+
+    <div id="loader"><div class="spinner"></div></div>
+
+    <header>
+        <div class="brand">
+            <h1 id="nav-title">مراجعة Power BI</h1>
+        </div>
+        <div class="controls">
+            <button id="mark-all-btn">تحديد الكل</button>
+            <button id="theme-toggle">🌙</button>
+            <button id="lang-toggle">English</button>
+        </div>
+    </header>
+<nav class="topics-nav" id="topics-navbar">
+    <div class="topic-link" data-target="etl">
+        <span class="topic-icon">⚙️</span>
+        <span class="topic-label" data-ar="هندسة البيانات" data-en="ETL">هندسة البيانات</span>
+    </div>
+    <div class="topic-link" data-target="modeling">
+        <span class="topic-icon">🏗️</span>
+        <span class="topic-label" data-ar="النمذجة" data-en="Modeling">النمذجة</span>
+    </div>
+    <div class="topic-link" data-target="dax">
+        <span class="topic-icon">📊</span>
+        <span class="topic-label" data-ar="المقاييس DAX" data-en="DAX">المقاييس DAX</span>
+    </div>
+    <div class="topic-link" data-target="visualization">
+        <span class="topic-icon">🎨</span>
+        <span class="topic-label" data-ar="المرئيات" data-en="Visuals">المرئيات</span>
+    </div>
+    <div class="topic-link" data-target="admin">
+        <span class="topic-icon">🔐</span>
+        <span class="topic-label" data-ar="الإدارة" data-en="Admin">الإدارة</span>
+    </div>
+</nav>
+<main class="container">
+        <div class="hero">
+            <h2 id="hero-title">التقرير المعماري لبيئات ذكاء الأعمال</h2>
+            <p id="hero-subtitle">إطار عمل مرجعي متكامل لتقييم ومراجعة دورة حياة البيانات</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="progress-header">
+                <span id="progress-text">معدل الإنجاز</span>
+                <span id="progress-percentage">0%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <input type="text" id="search-input" class="search-bar" placeholder="ابحث في المهام...">
+        </div>
+
+        <div id="checklist-container">
+            </div>
+        
+        <div id="empty-state" class="empty-state">لا توجد نتائج مطابقة للبحث.</div>
+    </main>
+
+    <div id="back-to-top">↑</div>
+
+    <script>
+        // 1. تحديث نصوص العناوين عند تغيير اللغة
+function updateNavTranslation() {
+    document.querySelectorAll('.topic-label').forEach(label => {
+        label.innerText = label.getAttribute(`data-${currentLang}`);
+    });
+}
+
+// أضف استدعاء الوظيفة داخل مستمع حدث 'lang-toggle' الموجود لديك مسبقاً
+document.getElementById('lang-toggle').addEventListener('click', () => {
+    // ... كودك القديم هنا ...
+    updateNavTranslation(); 
+});
+
+// 2. منطق النقر والسكرول المحدث
+document.querySelectorAll('.topic-link').forEach(link => {
+    link.addEventListener('click', () => {
+        const targetId = link.getAttribute('data-target');
+        const sections = document.querySelectorAll('.section');
+        
+        // البحث عن القسم الصحيح
+        let targetSection = null;
+        sections.forEach(sec => {
+            if (sec.innerHTML.toLowerCase().includes(targetId)) {
+                targetSection = sec;
+            }
+        });
+
+        if (targetSection) {
+            const offset = 140; // تعويض ارتفاع الهيدر + شريط المواضيع
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = targetSection.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// 3. تحديث الحالة النشطة (Active Class) عند التمرير
+window.addEventListener('scroll', () => {
+    let current = "";
+    const sections = document.querySelectorAll('.section');
+    const scrollPos = window.scrollY + 160;
+
+    sections.forEach(section => {
+        if (scrollPos >= section.offsetTop) {
+            const firstItem = section.querySelector('.item');
+            if(firstItem) {
+                // استخراج النوع من البيانات (M-language, DAX etc)
+                // هذا الجزء يعتمد على بنية البيانات لديك
+                const onclickStr = firstItem.getAttribute('onclick');
+                const idMatch = onclickStr ? onclickStr.match(/\d+/) : null;
+                if(idMatch) {
+                    const item = itemsData.find(i => i.id == idMatch[0]);
+                    if(item) current = item.category;
+                }
+            }
+        }
+    });
+
+    document.querySelectorAll('.topic-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-target') === current) {
+            link.classList.add('active');
+        }
+    });
+});
+        // ==========================================
+        // 1. Data Structure (Bilingual Support)
+        // ==========================================
+        // NOTE: Here is a representative subset of the checklist items. 
+        // You can easily add the remaining 300+ items following this exact same structure.
+        const itemsData = [
+
+  {"id": 1, "category": "etl", "domain_ar": "الاتصال", "domain_en": "Data Connectivity", "ar": "حدد متطلبات العمل ومصادر البيانات المعمارية بدقة قبل الشروع في بناء أي اتصال هيكلي.", "en": "Define business requirements and architectural data sources accurately before building any structural connection."},
+  {"id": 2, "category": "etl", "domain_ar": "الاتصال", "domain_en": "Data Connectivity", "ar": "اتصل بقواعد البيانات العلائقية باستخدام الاستعلامات المباشرة (DirectQuery) أو الاستيراد بناءً على الحجم.", "en": "Connect to relational databases using DirectQuery or Import based on volume."},
+  {"id": 3, "category": "etl", "domain_ar": "الاتصال", "domain_en": "Data Connectivity", "ar": "استخرج البيانات من مجلد كامل (Folder) لدمج ملفات متعددة ديناميكياً وتجاوز تحديد الأوراق الفردية.", "en": "Extract data from a full Folder to merge multiple files dynamically and bypass selecting individual sheets."},
+  {"id": 4, "category": "etl", "domain_ar": "الاتصال", "domain_en": "Data Connectivity", "ar": "عطل خيار التحليل التلقائي للتواريخ (Auto Date/Time) لتقليل حجم النموذج بشكل دراماتيكي.", "en": "Disable the Auto Date/Time option to dramatically reduce the model size."},
+  {"id": 5, "category": "etl", "domain_ar": "الاتصال", "domain_en": "Data Connectivity", "ar": "حدد مستويات الخصوصية (Privacy Levels) بدقة لمنع حدوث أخطاء الجدار الناري للصيغ (Formula Firewall).", "en": "Define Privacy Levels accurately to prevent Formula Firewall errors."},
+  {"id": 6, "category": "etl", "domain_ar": "الاتصال", "domain_en": "Data Connectivity", "ar": "استخدم المعلمات (Parameters) لتمرير مسارات قواعد البيانات وتسهيل النقل بين بيئات العمل.", "en": "Use Parameters to pass database paths and facilitate transitioning between environments."},
+  {"id": 7, "category": "etl", "domain_ar": "الاتصال", "domain_en": "Data Connectivity", "ar": "نفذ اتصالات مساحات العمل الحية للوصول إلى النماذج الدلالية المركزية المعتمدة مؤسسياً.", "en": "Implement live workspace connections to access centrally approved organizational semantic models."},
+  {"id": 8, "category": "etl", "domain_ar": "التنظيف", "domain_en": "Data Cleansing", "ar": "أزل الأعمدة والصفوف غير الضرورية لتقليل استهلاك الذاكرة وتسريع أوقات التحديث.", "en": "Remove unnecessary columns and rows to reduce memory consumption and speed up refresh times."},
+  {"id": 9, "category": "etl", "domain_ar": "التنظيف", "domain_en": "Data Cleansing", "ar": "فلتر البيانات تاريخياً في الخطوات الأولى لاستبعاد السجلات المتقادمة التي لا تخدم التحليل.", "en": "Filter data historically in the early steps to exclude obsolete records that do not serve the analysis."},
+  {"id": 10, "category": "etl", "domain_ar": "التنظيف", "domain_en": "Data Cleansing", "ar": "غير أنواع البيانات بشكل صريح لكل عمود (نص، عدد صحيح، تاريخ) لتجنب أخطاء تقييم النمذجة.", "en": "Change data types explicitly for each column (text, whole number, date) to avoid modeling evaluation errors."},
+  {"id": 11, "category": "etl", "domain_ar": "التنظيف", "domain_en": "Data Cleansing", "ar": "استخدم ميزة \"استبدال القيم\" بفعالية للتعامل مع القيم الخالية (Null) والبيانات المفقودة بذكاء.", "en": "Use the \"Replace Values\" feature effectively to intelligently handle Null and missing data."},
+  {"id": 12, "category": "etl", "domain_ar": "التنظيف", "domain_en": "Data Cleansing", "ar": "أزل القيم المكررة من جداول الأبعاد باستخدام وظيفة List.Distinct لضمان سلامة العلاقات.", "en": "Remove duplicate values from dimension tables using the List.Distinct function to ensure relationship integrity."},
+  {"id": 13, "category": "etl", "domain_ar": "التنظيف", "domain_en": "Data Cleansing", "ar": "قسم الأعمدة المركبة (مثل الاسم الكامل) بناءً على المحددات لتحسين تفصيل البيانات (Granularity).", "en": "Split composite columns (like full name) based on delimiters to improve data granularity."},
+  {"id": 14, "category": "etl", "domain_ar": "التنظيف", "domain_en": "Data Cleansing", "ar": "نظف الحقول النصية باستخدام دوال الفراغات لإزالة المسافات البادئة والزائدة قبل التحميل.", "en": "Clean text fields using Trim functions to remove leading and trailing spaces before loading."},
+  {"id": 15, "category": "etl", "domain_ar": "التحويل", "domain_en": "Data Transformation", "ar": "استخدم أداة \"العمود من الأمثلة\" (Column from Examples) لاستخراج الأنماط النصية المعقدة بسرعة.", "en": "Use the \"Column from Examples\" tool to quickly extract complex text patterns."},
+  {"id": 16, "category": "etl", "domain_ar": "التحويل", "domain_en": "Data Transformation", "ar": "أنشئ أعمدة شرطية مسبقة (Conditional Columns) لتصنيف البيانات الثابتة في المصدر لتخفيف عبء المقاييس.", "en": "Create Conditional Columns upfront to categorize static data at the source to reduce the burden on measures."},
+  {"id": 17, "category": "etl", "domain_ar": "التحويل", "domain_en": "Data Transformation", "ar": "استخدم أداة \"إلغاء التلخيص\" (Unpivot) لتحويل الجداول المتقاطعة العريضة إلى تنسيق عمودي مهيكل.", "en": "Use the \"Unpivot\" tool to transform wide cross-tabular tables into a structured columnar format."},
+  {"id": 18, "category": "etl", "domain_ar": "التحويل", "domain_en": "Data Transformation", "ar": "نفذ عمليات الدمج (Merge Queries) مع توخي الحذر الشديد في اختيار نوع الربط (مثل Left Outer).", "en": "Perform Merge Queries with extreme caution when selecting the join kind (e.g., Left Outer)."},
+  {"id": 19, "category": "etl", "domain_ar": "التحويل", "domain_en": "Data Transformation", "ar": "أضف أعمدة الفهرس (Index Columns) عند الحاجة إلى الإشارة المرجعية المتسلسلة للصفوف السابقة.", "en": "Add Index Columns when sequential referencing to previous rows is needed."},
+  {"id": 20, "category": "etl", "domain_ar": "التحويل", "domain_en": "Data Transformation", "ar": "استخدم الفرز الأبجدي للأعمدة ديناميكياً عبر دمج دوال Table.ReorderColumns و Table.ColumnNames.", "en": "Sort columns alphabetically dynamically by combining Table.ReorderColumns and Table.ColumnNames."},
+  {"id": 21, "category": "etl", "domain_ar": "الأداء", "domain_en": "Performance", "ar": "تحقق من تفعيل واستمرارية \"طي الاستعلام\" (Query Folding) بالنقر بزر الماوس الأيمن على كل خطوة.", "en": "Verify the activation and continuity of Query Folding by right-clicking on each step."},
+  {"id": 22, "category": "etl", "domain_ar": "الأداء", "domain_en": "Performance", "ar": "طبق جميع عمليات التصفية والدمج الحسابية القابلة للطي في بداية الاستعلامات قبل أي خطوة تكسر الطي.", "en": "Apply all foldable filtering and merging operations at the beginning of queries before any step breaks folding."},
+  {"id": 23, "category": "etl", "domain_ar": "الأداء", "domain_en": "Performance", "ar": "عطل خيار \"تضمين في تحديث التقرير\" للاستعلامات الوسيطة التي لا تُستخدم في النموذج الدلالي.", "en": "Disable the \"Include in report refresh\" option for intermediate queries not used in the semantic model."},
+  {"id": 24, "category": "etl", "domain_ar": "الأداء", "domain_en": "Performance", "ar": "عطل خيار \"تمكين التحميل\" (Enable Load) لجميع القواميس والجداول المرجعية المساعدة لتوفير الذاكرة.", "en": "Disable the \"Enable Load\" option for all helper dictionaries and reference tables to save memory."},
+  {"id": 25, "category": "etl", "domain_ar": "الأداء", "domain_en": "Performance", "ar": "أجرِ تجميعات البيانات (Aggregations) الثقيلة في المنبع (SQL) بدلاً من الواجهة متى ما كان ذلك متاحاً.", "en": "Perform heavy Aggregations upstream (in SQL) rather than in the interface whenever available."},
+  {"id": 26, "category": "etl", "domain_ar": "الأداء", "domain_en": "Performance", "ar": "تجنب استخدام دوال التجميد في الذاكرة (Table.Buffer) إلا في حالات الضرورة القصوى لتسريع الاستدعاء.", "en": "Avoid using Table.Buffer unless absolutely necessary to speed up retrieval."},
+  {"id": 27, "category": "etl", "domain_ar": "الأداء", "domain_en": "Performance", "ar": "استخدم مفاتيح الربط الرقمية الطويلة (Long Integer) بدلاً من السلاسل النصية لعمليات الدمج الجدولي.", "en": "Use Long Integer key types instead of text strings for table merging operations."},
+  {"id": 28, "category": "etl", "domain_ar": "الأداء", "domain_en": "Performance", "ar": "راقب أوقات التحديث لكل استعلام بشكل فردي لتحديد الاختناقات المتصلة بمصادر البيانات البطيئة.", "en": "Monitor refresh times for each query individually to identify bottlenecks related to slow data sources."},
+  {"id": 29, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "افتح المحرر المتقدم (Advanced Editor) لمراجعة وتبسيط كود M المولد تلقائياً خلف الكواليس.", "en": "Open the Advanced Editor to review and simplify the M code automatically generated behind the scenes."},
+  {"id": 30, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "تجنب كتابة النقطة الفاصلة مبدئياً عند استخدام (IntelliSense) لتلافي أخطاء التكرار البرمجي المزعجة.", "en": "Avoid typing the initial comma when using IntelliSense to prevent annoying code duplication errors."},
+  {"id": 31, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "استخرج قائمة بكافة الدوال المتاحة في النظام باستخدام استعلام #shared للاستفادة من التوثيق الداخلي.", "en": "Extract a list of all available functions in the system using the #shared query to leverage internal documentation."},
+  {"id": 32, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "أنشئ جداول تواريخ ديناميكية بالكامل باستخدام أكواد M المتقدمة لدعم تحديثات الفترات الآلية.", "en": "Create fully dynamic Date Tables using advanced M scripts to support automated period updates."},
+  {"id": 33, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "قم بالإشارة إلى بيانات الصف السابق باستخدام المؤشرات الديناميكية {...-1} لمعالجة السلاسل الزمنية.", "en": "Reference previous row data using dynamic indexing {...-1} to process time series."},
+  {"id": 34, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "حول القوائم المستخرجة من واجهات برمجة التطبيقات (APIs) إلى جداول منتظمة باستخدام Table.FromList.", "en": "Convert lists extracted from APIs into regular tables using Table.FromList."},
+  {"id": 35, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "صرح عن المتغيرات البرمجية محلياً باستخدام تقنية السجلات (Records) في M لإعادة استخدامها.", "en": "Declare programming variables locally using Records technology in M for reusability."},
+  {"id": 36, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "نفذ دوال تحويل الأعمدة الديناميكية Table.TransformColumns لتعديل القيم دون استدعاء الأعمدة بالاسم.", "en": "Implement dynamic column transformation functions Table.TransformColumns to modify values without calling columns by name."},
+  {"id": 37, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "استخدم وظائف الاستخراج النصي الديناميكية لفصل الأجزاء المخصصة من مسارات الروابط (URL parsing).", "en": "Use dynamic text extraction functions to parse custom parts from URL paths (URL parsing)."},
+  {"id": 38, "category": "etl", "domain_ar": "لغة M", "domain_en": "M Language", "ar": "انسخ والصق الاستعلامات المعقدة وتوابعها التغذوية بين ملفات Excel والخدمة السحابية لتوحيد المعايير.", "en": "Copy and paste complex queries and their dependencies between Excel and the Power BI Service to standardize criteria."},
+  {"id": 39, "category": "etl", "domain_ar": "واجهة المحرر", "domain_en": "Editor Interface", "ar": "افتح محرر الاستعلامات بسرعة باستخدام اختصار لوحة المفاتيح المتقدم (ALT-F12) للانتقال المباشر.", "en": "Quickly open the Power Query Editor using the advanced keyboard shortcut (ALT-F12) for direct navigation."},
+  {"id": 40, "category": "etl", "domain_ar": "واجهة المحرر", "domain_en": "Editor Interface", "ar": "خصص شريط الوصول السريع (Quick Access Toolbar) لجمع أدواتك الأكثر استخداماً في مكان واحد.", "en": "Customize the Quick Access Toolbar to gather your most used tools in one place."},
+  {"id": 41, "category": "etl", "domain_ar": "واجهة المحرر", "domain_en": "Editor Interface", "ar": "استخدم اختصارات التكبير (CTRL-SHIFT-Plus) لتحسين رؤية الأكواد الدقيقة في شريط الصيغة.", "en": "Use zoom shortcuts (CTRL-SHIFT-Plus) to improve the visibility of fine code in the formula bar."},
+  {"id": 42, "category": "etl", "domain_ar": "واجهة المحرر", "domain_en": "Editor Interface", "ar": "راجع جودة الأعمدة بتفعيل خيارات (Column Quality) لاكتشاف وتصحيح نسب الأخطاء والقيم الفارغة.", "en": "Review column quality by enabling Column Quality options to detect and correct error rates and empty values."},
+  {"id": 43, "category": "etl", "domain_ar": "واجهة المحرر", "domain_en": "Editor Interface", "ar": "فعل خيار \"توزيع الأعمدة\" (Column Distribution) للتحقق السريع من عدد القيم المميزة والفريدة لكل عمود.", "en": "Enable the Column Distribution option to quickly check the number of distinct and unique values for each column."},
+  {"id": 44, "category": "etl", "domain_ar": "التنظيم", "domain_en": "Organization", "ar": "أعد تسمية الخطوات المطبقة (Applied Steps) بأسماء دقيقة تعكس الإجراء الفعلي لتسهيل الصيانة.", "en": "Rename Applied Steps with precise names reflecting the actual action to facilitate maintenance."},
+  {"id": 45, "category": "etl", "domain_ar": "التنظيم", "domain_en": "Organization", "ar": "رتب الاستعلامات ضمن مجلدات تنظيمية منطقية (مثال: حقائق، أبعاد، وظائف، معلمات).", "en": "Arrange queries within logical organizational folders (e.g., Facts, Dimensions, Functions, Parameters)."},
+  {"id": 46, "category": "etl", "domain_ar": "التنظيم", "domain_en": "Organization", "ar": "أضف أوصافاً نصية توضيحية لخصائص كل استعلام لتوثيق منطق الأعمال ومصدر البيانات الأصلي.", "en": "Add descriptive text properties to each query to document the business logic and original data source."},
+  {"id": 47, "category": "etl", "domain_ar": "معالجة الأخطاء", "domain_en": "Error Handling", "ar": "نفذ آليات معالجة الأخطاء الاستباقية (try...otherwise) لضمان استمرار التحديث عند ورود بيانات تالفة.", "en": "Implement proactive error handling mechanisms (try...otherwise) to ensure refresh continuity when corrupted data arrives."},
+  {"id": 48, "category": "etl", "domain_ar": "معالجة الأخطاء", "domain_en": "Error Handling", "ar": "احتفظ بالصفوف التي تحتوي على أخطاء مؤقتاً في استعلام منفصل (Keep Errors) لتتبع مصدر الخلل الميداني.", "en": "Temporarily retain rows containing errors in a separate query (Keep Errors) to trace the source of the field defect."},
+  {"id": 49, "category": "etl", "domain_ar": "معالجة الأخطاء", "domain_en": "Error Handling", "ar": "نظف مساحات التخزين المؤقتة للمحرك المحلي لحل مشكلات تحميل البيانات القديمة أو المستعصية.", "en": "Clear the local engine cache to resolve issues with loading stale or stubborn data."},
+  {"id": 50, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "أضف شرائح Excel (Slicers) كفلاتر سريعة للجداول الناتجة عن الاستعلامات محلياً لفحص البيانات.", "en": "Add Excel Slicers locally as quick filters for query result tables to inspect data."},
+  {"id": 51, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "اضبط إعدادات تحديث كل استعلام بشكل مستقل لتلبية متطلبات حداثة البيانات المختلفة للمصادر.", "en": "Adjust the refresh settings for each query independently to meet different data freshness requirements for sources."},
+  {"id": 52, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "استخدم الدالة DateTime.LocalNow() لاستخراج أوقات التحديث الآلية وحفظها في جداول التدقيق.", "en": "Use the DateTime.LocalNow() function to extract automated refresh times and save them in audit tables."},
+  {"id": 53, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "قسم البيانات التاريخية باستخدام الجداول البارامترية لدعم آليات التحديث التزايدي لاحقاً في النموذج.", "en": "Partition historical data using parameter tables to support Incremental Refresh mechanisms later in the model."},
+  {"id": 54, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "قم بأتمتة مهام التنظيف اللاحقة لـ Power Query عبر ربط المخرجات بمسارات (Power Automate).", "en": "Automate post-Power Query cleaning tasks by linking outputs to Power Automate flows."},
+  {"id": 55, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "أنشئ دوال مخصصة (Custom Functions) لتكرار نفس عمليات التحويل المعقدة على جداول متشابهة.", "en": "Create Custom Functions to repeat the same complex transformation operations on similar tables."},
+  {"id": 56, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "دمج الأعمدة المفصولة للتواريخ والأوقات لإنشاء مفاتيح بحث زمنية متسقة قبل التحميل للنموذج المركزي.", "en": "Combine separated Date and Time columns to create consistent temporal search keys before loading to the central model."},
+  {"id": 57, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "استخرج الكيانات المسماة أو القيم باستخدام تقنيات مطابقة النصوص المتقدمة (Fuzzy Matching) لتوحيد التهجئة.", "en": "Extract named entities or values using Fuzzy Matching techniques to standardize spelling."},
+  {"id": 58, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "صمم جداول تحويل (Transformation Tables) لحل مشاكل مطابقة الأسماء المعقدة التي تفشل فيها المطابقة الضبابية.", "en": "Design Transformation Tables to resolve complex name matching issues where fuzzy matching fails."},
+  {"id": 59, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "طبق فرز القوائم المتقدم استناداً إلى عمليات حسابية مجمعة باستخدام List.Max للمقارنات المخصصة.", "en": "Apply advanced list sorting based on aggregated calculations using List.Max for custom comparisons."},
+  {"id": 60, "category": "etl", "domain_ar": "مهام متقدمة", "domain_en": "Advanced Tasks", "ar": "أغلق وطبق التغييرات (Close & Apply) وافحص أداء انتقال البيانات إلى نموذج الاستيراد المعماري.", "en": "Click Close & Apply and inspect the performance of data transition into the architectural Import model."},
+  {"id": 61, "category": "modeling", "domain_ar": "هيكلة النموذج", "domain_en": "Data Modeling", "ar": "صمم نموذج البيانات ارتكازاً على مبدأ المخطط النجمي (Star Schema) لتبسيط مسارات الربط وتسريعها.", "en": "Design the data model based on the Star Schema principle to simplify and speed up relationship paths."},
+  {"id": 62, "category": "modeling", "domain_ar": "هيكلة النموذج", "domain_en": "Data Modeling", "ar": "افصل الجداول المسطحة العريضة جداً إلى جداول حقائق مركزية وأبعاد وصفية محيطة بها.", "en": "Split extremely wide flat tables into central fact tables and surrounding descriptive dimension tables."},
+  {"id": 63, "category": "modeling", "domain_ar": "هيكلة النموذج", "domain_en": "Data Modeling", "ar": "استخدم مفاتيح الربط الرقمية (Integers) حصراً بين الجداول بدلاً من النصوص لتحقيق أقصى ضغط للذاكرة.", "en": "Use Integer keys exclusively between tables instead of text to achieve maximum memory compression."},
+  {"id": 64, "category": "modeling", "domain_ar": "هيكلة النموذج", "domain_en": "Data Modeling", "ar": "تأكد من أن تدفق التصفية (Filter Direction) أحادي الاتجاه ينطلق من الأبعاد ويصب في جداول الحقائق.", "en": "Ensure the Filter Direction is unidirectional, flowing from dimensions down to fact tables."},
+  {"id": 65, "category": "modeling", "domain_ar": "هيكلة النموذج", "domain_en": "Data Modeling", "ar": "تجنب تطبيق الفلترة ثنائية الاتجاه (Bidirectional) لتفادي الغموض التحليلي وبطء الاستعلامات الشديد.", "en": "Avoid applying Bidirectional cross-filtering to prevent analytical ambiguity and severe query slowdowns."},
+  {"id": 66, "category": "modeling", "domain_ar": "هيكلة النموذج", "domain_en": "Data Modeling", "ar": "حل إشكاليات العلاقات المتعددة (Many-to-Many) المعقدة باستخدام جداول الجسر الوسيطة (Bridge Tables).", "en": "Resolve complex Many-to-Many relationships using intermediate Bridge Tables."},
+  {"id": 67, "category": "modeling", "domain_ar": "هيكلة النموذج", "domain_en": "Data Modeling", "ar": "أنشئ علاقات غير نشطة (Inactive) للتعامل مع السيناريوهات التي يتضمن فيها جدول الحقائق تواريخ متعددة.", "en": "Create Inactive relationships to handle scenarios where the fact table contains multiple dates."},
+  {"id": 68, "category": "modeling", "domain_ar": "هيكلة النموذج", "domain_en": "Data Modeling", "ar": "فعل خيار \"التكامل المرجعي\" (Assume Referential Integrity) للنماذج المباشرة لتسريع أداء استعلامات SQL.", "en": "Enable the \"Assume Referential Integrity\" option for DirectQuery models to accelerate SQL query performance."},
+  {"id": 69, "category": "modeling", "domain_ar": "جدول التواريخ", "domain_en": "Date Table", "ar": "صمم جدول تواريخ مركزي (Date Table) وحدده كجدول رسمي لتفعيل وظائف ذكاء الوقت الديناميكية.", "en": "Design a central Date Table and mark it as an official date table to enable dynamic Time Intelligence functions."},
+  {"id": 70, "category": "modeling", "domain_ar": "جدول التواريخ", "domain_en": "Date Table", "ar": "تحقق من أن جدول التواريخ يغطي جميع السنوات المرتبطة بالبيانات دون انقطاع أو فراغات في التسلسل.", "en": "Verify that the date table covers all years related to the data without interruption or gaps in the sequence."},
+  {"id": 71, "category": "modeling", "domain_ar": "هندسة الضغط", "domain_en": "Compression Engineering", "ar": "أزل جميع الأعمدة ذات الفرز الفريد العالي (High Cardinality) غير المستخدمة في التحليل أو العلاقات لتوفير الذاكرة.", "en": "Remove all unused High Cardinality columns not utilized in analysis or relationships to save memory."},
+  {"id": 72, "category": "modeling", "domain_ar": "هندسة الضغط", "domain_en": "Compression Engineering", "ar": "افصل أعمدة التاريخ والوقت المدمجة إلى عمودين منفصلين لتعزيز قدرة محرك VertiPaq على التشفير.", "en": "Split combined DateTime columns into two separate columns to enhance VertiPaq's encoding capability."},
+  {"id": 73, "category": "modeling", "domain_ar": "هندسة الضغط", "domain_en": "Compression Engineering", "ar": "احذف الأعمدة المحسوبة (Calculated Columns) داخل النموذج متى ما كان استبدالها بمقاييس DAX ممكناً.", "en": "Delete Calculated Columns inside the model whenever replacing them with DAX measures is possible."},
+  {"id": 74, "category": "modeling", "domain_ar": "هندسة الضغط", "domain_en": "Compression Engineering", "ar": "استخدم أدوات تحليل حجم النموذج (مثل VertiPaq Analyzer) لاكتشاف الجداول والأعمدة المستنزفة للموارد.", "en": "Use model size analysis tools (like VertiPaq Analyzer) to discover resource-draining tables and columns."},
+  {"id": 75, "category": "modeling", "domain_ar": "تنظيم الواجهة", "domain_en": "Model View", "ar": "أخفِ جميع مفاتيح الربط (Foreign Keys) والأعمدة المساعدة من واجهة عرض المستخدم لتقليل التشتت البصري.", "en": "Hide all Foreign Keys and helper columns from the Report View to reduce visual clutter for the user."},
+  {"id": 76, "category": "modeling", "domain_ar": "تنظيم الواجهة", "domain_en": "Model View", "ar": "أخفِ الأعمدة المستخدمة فقط لعمليات الفرز الترتيبي (Sort by Column) لمنع إرباك منشئي التقارير.", "en": "Hide columns used solely for \"Sort by Column\" operations to prevent confusing report creators."},
+  {"id": 77, "category": "modeling", "domain_ar": "تنظيم الواجهة", "domain_en": "Model View", "ar": "طبق عملية الفرز الديناميكي للأعمدة النصية (كأسماء الأشهر) بناءً على أعمدة رقمية متسلسلة صحيحة.", "en": "Apply dynamic sorting for text columns (like month names) based on sequential integer columns."},
+  {"id": 78, "category": "modeling", "domain_ar": "تنظيم الواجهة", "domain_en": "Model View", "ar": "نظم الحقول والمقاييس المتزايدة بوضعها داخل مجلدات عرض منطقية (Display Folders) لتسهيل الوصول.", "en": "Organize proliferating fields and measures by placing them into logical Display Folders for easy access."},
+  {"id": 79, "category": "modeling", "domain_ar": "الميزات المتقدمة", "domain_en": "Advanced Features", "ar": "صمم مجموعات الحساب (Calculation Groups) لتوحيد منطق ذكاء الوقت وتقليل إنشاء مئات المقاييس المكررة.", "en": "Design Calculation Groups to standardize time intelligence logic and reduce creating hundreds of duplicate measures."},
+  {"id": 80, "category": "modeling", "domain_ar": "الميزات المتقدمة", "domain_en": "Advanced Features", "ar": "طبق عناصر الحساب (Calculation Items) لتطبيق صيغ التنسيق المخصصة على القيم ديناميكياً بناءً على الاختيار.", "en": "Apply Calculation Items to dynamically apply custom format strings to values based on selection."},
+  {"id": 81, "category": "modeling", "domain_ar": "الميزات المتقدمة", "domain_en": "Advanced Features", "ar": "استخدم معلمات الحقول (Field Parameters) لتمكين المستخدمين من تغيير المحاور والمقاييس المعروضة تفاعلياً.", "en": "Use Field Parameters to enable users to interactively change the displayed axes and measures."},
+  {"id": 82, "category": "modeling", "domain_ar": "الميزات المتقدمة", "domain_en": "Advanced Features", "ar": "أنشئ جداول التجميعات (Aggregations) لتلخيص البيانات المليارية وتسريع استجابة المرئيات عالية المستوى.", "en": "Create Aggregations tables to summarize billion-row data and accelerate the response of high-level visuals."},
+  {"id": 83, "category": "modeling", "domain_ar": "الميزات المتقدمة", "domain_en": "Advanced Features", "ar": "نسق الجداول الهجينة (Hybrid Tables) لجمع البيانات التاريخية المستوردة مع البيانات اللحظية المباشرة بذكاء.", "en": "Configure Hybrid Tables to intelligently combine imported historical data with live real-time data."},
+  {"id": 84, "category": "admin", "domain_ar": "الأمان والتحكم", "domain_en": "Security and Control", "ar": "طبق سياسات الأمان على مستوى الصف (RLS) بدقة لمنع المستخدمين من رؤية بيانات خارج نطاق صلاحياتهم.", "en": "Strictly apply Row-Level Security (RLS) policies to prevent users from seeing data outside their authorization scope."},
+  {"id": 85, "category": "admin", "domain_ar": "الأمان والتحكم", "domain_en": "Security and Control", "ar": "أنشئ قواعد RLS ديناميكية باستخدام دالة USERPRINCIPALNAME() للمطابقة مع جداول هوية الموظفين.", "en": "Create dynamic RLS rules using the USERPRINCIPALNAME() function to match with employee identity tables."},
+  {"id": 86, "category": "admin", "domain_ar": "الأمان والتحكم", "domain_en": "Security and Control", "ar": "طبق الأمان على مستوى الكائن (OLS) لإخفاء أعمدة حساسة بأكملها (مثل الرواتب) عن فئات وظيفية محددة.", "en": "Apply Object-Level Security (OLS) to hide entire sensitive columns (e.g., salaries) from specific job roles."},
+  {"id": 87, "category": "admin", "domain_ar": "الأمان والتحكم", "domain_en": "Security and Control", "ar": "اختبر صحة أدوار الأمان بصرامة عبر استخدام وظيفة \"العرض كدور\" (View as Role) في البرنامج المحلي.", "en": "Rigorously test the validity of security roles by using the \"View as Role\" feature in Power BI Desktop."},
+  {"id": 88, "category": "admin", "domain_ar": "الحوكمة التلقائية", "domain_en": "Automated Governance", "ar": "عطل خاصية إنشاء المقاييس الضمنية (Implicit Measures) من الإعدادات لإجبار المطورين على كتابة مقاييس صريحة.", "en": "Disable the creation of Implicit Measures in settings to force developers to write explicit measures."},
+  {"id": 89, "category": "admin", "domain_ar": "الحوكمة التلقائية", "domain_en": "Automated Governance", "ar": "طبق اصطلاحات تسمية (Naming Conventions) قياسية واضحة ومقروءة لكافة الكيانات وتجنب الاختصارات المبهمة.", "en": "Apply clear and readable standard Naming Conventions for all entities and avoid obscure abbreviations."},
+  {"id": 90, "category": "admin", "domain_ar": "الحوكمة التلقائية", "domain_en": "Automated Governance", "ar": "وزع الجداول الكثيفة في عرض النموذج على مخططات فرعية منفصلة (Layouts) لتبسيط خريطة العلاقات.", "en": "Distribute dense tables in the Model view across separate Layouts to simplify the relationship map."},
+  {"id": 91, "category": "admin", "domain_ar": "الحوكمة التلقائية", "domain_en": "Automated Governance", "ar": "عين فئات البيانات (Data Categories) للروابط الجغرافية والإلكترونية بشكل صريح لتفعيل الخرائط والروابط.", "en": "Explicitly assign Data Categories to geographic and URL links to enable maps and hyperlinks."},
+  {"id": 92, "category": "admin", "domain_ar": "التوثيق المستمر", "domain_en": "Continuous Documentation", "ar": "اكتب أوصافاً تقنية داخل خصائص كل مقياس وجدول لشرح المنطق المالي والرياضي للمطورين اللاحقين.", "en": "Write technical descriptions within the properties of each measure and table to explain the financial and mathematical logic to future developers."},
+  {"id": 93, "category": "admin", "domain_ar": "التحقق والتدقيق", "domain_en": "Verification and Auditing", "ar": "استخدم أداة تحليل أفضل الممارسات (BPA) عبر Tabular Editor للبحث التلقائي عن أخطاء البنية المعمارية.", "en": "Use the Best Practice Analyzer (BPA) via Tabular Editor to automatically search for architectural structure errors."},
+  {"id": 94, "category": "admin", "domain_ar": "مهام التصميم", "domain_en": "Design Tasks", "ar": "استبدل استخدام خيارات التصفية الافتراضية للجداول بمتغيرات مساعدة متقدمة للتحكم الدقيق بالمعاملات.", "en": "Replace the use of default table filtering options with advanced auxiliary variables for precise parameter control."},
+  {"id": 95, "category": "admin", "domain_ar": "مهام التصميم", "domain_en": "Design Tasks", "ar": "اختبر استجابة النموذج عبر تغيير اتجاه التصفية مؤقتاً لتشخيص مشاكل التقاطع وإعادتها لوضعها الآمن.", "en": "Test model responsiveness by temporarily changing the filter direction to diagnose intersection issues and returning it to a safe state."},
+  {"id": 96, "category": "modeling", "domain_ar": "بنية التخزين", "domain_en": "Storage Architecture", "ar": "حدد وضع التخزين المثالي لكل كيان (Import, DirectQuery, Dual) استناداً لمعطيات الاستخدام والتحميل.", "en": "Determine the optimal Storage Mode for each entity (Import, DirectQuery, Dual) based on usage and load data."},
+  {"id": 97, "category": "modeling", "domain_ar": "بنية التخزين", "domain_en": "Storage Architecture", "ar": "عين الجداول الوصفية المرتبطة بجداول الحقائق المباشرة إلى نمط التخزين المزدوج (Dual) لتسريع المعالجة.", "en": "Set descriptive tables linked to direct fact tables to Dual storage mode to accelerate processing."},
+  {"id": 98, "category": "modeling", "domain_ar": "تفاعلات مباشرة", "domain_en": "Direct Interactions", "ar": "أنشئ معاملات رقمية (What-If Parameters) لتزويد المحللين بأدوات محاكاة لسيناريوهات الخصم والنمو المستقبلية.", "en": "Create numeric What-If Parameters to provide analysts with simulation tools for future discount and growth scenarios."},
+  {"id": 99, "category": "modeling", "domain_ar": "تفاعلات مباشرة", "domain_en": "Direct Interactions", "ar": "دمج سلاسل الحساب المتداخلة لتقليل مسافات الانتقال بين الجداول وتسريع عمليات الاسترجاع للواجهة.", "en": "Merge nested calculation chains to reduce transition distances between tables and speed up interface retrieval."},
+  {"id": 100, "category": "modeling", "domain_ar": "تفاعلات مباشرة", "domain_en": "Direct Interactions", "ar": "أضف مرادفات لغوية (Synonyms) للمقاييس والأعمدة لتحسين أداء محرك الذكاء الاصطناعي للإجابة على الأسئلة (Q&A).", "en": "Add linguistic Synonyms to measures and columns to improve the performance of the AI Q&A engine."},
+  {"id": 101, "category": "modeling", "domain_ar": "تحسينات 2026", "domain_en": "2026 Enhancements", "ar": "قم بإنشاء وتحديد الأعمدة المحسوبة المرتبطة بسياق المستخدم (User context aware) في الميزات التجريبية الجديدة.", "en": "Create and define User context aware calculated columns in the new experimental features."},
+  {"id": 102, "category": "modeling", "domain_ar": "تحسينات 2026", "domain_en": "2026 Enhancements", "ar": "اختبر عرض التنسيقات عبر بيئة (TMDL View) لتسهيل قراءة النمذجة وإدارة التغييرات المعمارية بدقة.", "en": "Test formatting display via TMDL View to facilitate reading modeling and managing architectural changes accurately."},
+  {"id": 103, "category": "modeling", "domain_ar": "تحسينات 2026", "domain_en": "2026 Enhancements", "ar": "ادمج الجداول المستوردة مع جداول بحيرة البيانات المباشرة (Direct Lake) ضمن نفس النموذج الدلالي للطبقات.", "en": "Integrate imported tables with Direct Lake tables within the same semantic model layers."},
+  {"id": 104, "category": "modeling", "domain_ar": "تحسينات 2026", "domain_en": "2026 Enhancements", "ar": "وظف تحسينات العلاقات المتطورة الخاصة بـ Direct Lake لمعالجة البيانات الضخمة في OneLake بكفاءة.", "en": "Employ advanced relationship enhancements specific to Direct Lake to process big data in OneLake efficiently."},
+  {"id": 105, "category": "modeling", "domain_ar": "تحسينات 2026", "domain_en": "2026 Enhancements", "ar": "صمم استعلامات ديناميكية تعتمد على حقول الاختيار للتأثير على ترتيب البيانات المرئية (Influencing sort).", "en": "Design dynamic queries that rely on selection fields to affect visual data sorting (Influencing sort)."},
+  {"id": 106, "category": "modeling", "domain_ar": "المراجعة المعمارية", "domain_en": "Architectural Review", "ar": "راجع التنسيقات المطبقة للعملات الموحدة وتأكد من استخدام الفواصل الصحيحة للملايين والآلاف بدقة حسابية.", "en": "Review applied unified currency formats and ensure the correct use of separators for millions and thousands with calculation accuracy."},
+  {"id": 107, "category": "modeling", "domain_ar": "المراجعة المعمارية", "domain_en": "Architectural Review", "ar": "عطل سلوكيات الربط التلقائي للعلاقات في الإعدادات لمنع النظام من إنشاء قفزات ارتباطية غير منطقية.", "en": "Disable automatic relationship detection behaviors in settings to prevent the system from creating illogical connection jumps."},
+  {"id": 108, "category": "modeling", "domain_ar": "المراجعة المعمارية", "domain_en": "Architectural Review", "ar": "فعل خيارات التحديث المتوازي للجداول في النماذج الكبيرة لتقليص النافذة الزمنية المطلوبة للتحديث اليومي.", "en": "Enable parallel table refresh options in large models to shrink the time window required for daily refresh."},
+  {"id": 109, "category": "modeling", "domain_ar": "المراجعة المعمارية", "domain_en": "Architectural Review", "ar": "قيد استدعاء بيانات الوجهات الخارجية ضمن أعمدة النموذج واعتمد على إجراءات ETL السابقة للقيام بذلك.", "en": "Restrict calling third-party destination data within model columns and rely on upstream ETL procedures to do so."},
+  {"id": 110, "category": "modeling", "domain_ar": "المراجعة المعمارية", "domain_en": "Architectural Review", "ar": "تحقق من استخدام صيغة DIVIDE في كافة مقاييس النموذج كبديل إلزامي لعمليات القسمة التقليدية لتجنب الأخطاء.", "en": "Verify the use of the DIVIDE function in all model measures as a mandatory alternative to traditional division operations to avoid errors."},
+  {"id": 111, "category": "dax", "domain_ar": "أساسيات DAX", "domain_en": "DAX Basics", "ar": "اكتب مقاييس صريحة (Explicit Measures) بدلاً من الاعتماد على التجميع التلقائي المعرض للخطأ في الواجهة.", "en": "Write Explicit Measures instead of relying on error-prone implicit aggregations in the interface."},
+  {"id": 112, "category": "dax", "domain_ar": "أساسيات DAX", "domain_en": "DAX Basics", "ar": "استخدم دالة DIVIDE كمعيار وحيد في جميع عمليات القسمة لضمان التعامل السلس مع القسمة على صفر.", "en": "Use the DIVIDE function as the sole standard in all division operations to ensure smooth handling of division by zero."},
+  {"id": 113, "category": "dax", "domain_ar": "أساسيات DAX", "domain_en": "DAX Basics", "ar": "طبق المسافات البادئة وتعدد الأسطر (استعن بـ DAX Formatter) لتنسيق التعليمات البرمجية وتسهيل المراجعة الجانبية.", "en": "Apply indentation and multi-lining (utilize DAX Formatter) to format the code and facilitate peer review."},
+  {"id": 114, "category": "dax", "domain_ar": "أساسيات DAX", "domain_en": "DAX Basics", "ar": "استدعِ المقاييس الأخرى باستخدام الأقواس المربعة فقط [Measure] بدون ذكر اسم الجدول لمنع الخلط المرجعي.", "en": "Invoke other measures using square brackets only [Measure] without mentioning the table name to prevent reference confusion."},
+  {"id": 115, "category": "dax", "domain_ar": "أساسيات DAX", "domain_en": "DAX Basics", "ar": "وظف المتغيرات المنطقية (VAR و RETURN) لتقسيم المعادلات الطويلة وتسريع الأداء عبر تخزين النتائج مؤقتاً.", "en": "Employ logical variables (VAR and RETURN) to break down long equations and accelerate performance by caching results."},
+  {"id": 116, "category": "dax", "domain_ar": "سياقات التقييم", "domain_en": "Evaluation Contexts", "ar": "طبق الدالة المحورية CALCULATE لتعديل سياق التصفية النشط بشكل متقدم وهادف لاستخراج النسب.", "en": "Apply the pivotal CALCULATE function to modify the active filter context in an advanced and targeted manner to extract ratios."},
+  {"id": 117, "category": "dax", "domain_ar": "سياقات التقييم", "domain_en": "Evaluation Contexts", "ar": "استخدم دالة ALL ضمن CALCULATE لتجريد جدول كامل من كافة فلاتر الواجهة، بغرض إيجاد القيمة الإجمالية المطلقة.", "en": "Use the ALL function within CALCULATE to strip an entire table of all interface filters to find the absolute total value."},
+  {"id": 118, "category": "dax", "domain_ar": "سياقات التقييم", "domain_en": "Evaluation Contexts", "ar": "وظف ALLEXCEPT للإبقاء الاستراتيجي على فلاتر معينة (كالموقع) مع مسح بقية الفلاتر (كالمنتجات) لاستخراج النسب المخصصة.", "en": "Employ ALLEXCEPT to strategically retain specific filters (like Location) while clearing the rest (like Products) to extract custom ratios."},
+  {"id": 119, "category": "dax", "domain_ar": "سياقات التقييم", "domain_en": "Evaluation Contexts", "ar": "طبق ALLSELECTED لاسترجاع إجماليات القيم الظاهرة حصراً في الواجهة بناءً على اختيارات السلايسر النشطة.", "en": "Apply ALLSELECTED to retrieve totals of values exclusively visible in the interface based on active slicer selections."},
+  {"id": 120, "category": "dax", "domain_ar": "سياقات التقييم", "domain_en": "Evaluation Contexts", "ar": "استخدم KEEPFILTERS ضمن التعبيرات الشرطية لضمان تقاطع الفلاتر المبرمجة مع فلاتر المستخدمين، بدلاً من الكتابة فوقها.", "en": "Use KEEPFILTERS within conditional expressions to ensure programmed filters intersect with user filters, rather than overwriting them."},
+  {"id": 121, "category": "dax", "domain_ar": "التصفية المتقدمة", "domain_en": "Advanced Filtering", "ar": "وظف دالة FILTER باحتراف لتمرير شروط معقدة أو رياضية لا تقبلها CALCULATE في صيغتها المبسطة.", "en": "Professionally employ the FILTER function to pass complex or mathematical conditions that a simplified CALCULATE cannot accept."},
+  {"id": 122, "category": "dax", "domain_ar": "التصفية المتقدمة", "domain_en": "Advanced Filtering", "ar": "تجنب تطبيق دالة FILTER على جدول بأكمله، واستخدمها مع VALUES(Column) لتقليص استهلاك الذاكرة بشكل جذري.", "en": "Avoid applying the FILTER function to an entire table, and use it with VALUES(Column) to drastically reduce memory consumption."},
+  {"id": 123, "category": "dax", "domain_ar": "التصفية المتقدمة", "domain_en": "Advanced Filtering", "ar": "استخدم TREATAS لنقل سياقات التصفية ببراعة بين الجداول غير المرتبطة فعلياً (العلاقات الافتراضية).", "en": "Use TREATAS to skillfully transfer filter contexts between physically unrelated tables (virtual relationships)."},
+  {"id": 124, "category": "dax", "domain_ar": "التصفية المتقدمة", "domain_en": "Advanced Filtering", "ar": "صمم مقاييس المجاميع الجارية الديناميكية بالاعتماد على الفلترة التاريخية المستمرة >= CurrentDate.", "en": "Design dynamic running total measures relying on continuous historical filtering >= CurrentDate."},
+  {"id": 125, "category": "dax", "domain_ar": "الدوال التكرارية", "domain_en": "Iterator Functions", "ar": "احسب العمليات المعقدة صفاً بصف باستخدام الوظائف التكرارية (Iterators) مثل SUMX و AVERAGEX لضرب السعر بالكمية.", "en": "Calculate complex operations row by row using Iterator functions (like SUMX and AVERAGEX) to multiply price by quantity."},
+  {"id": 126, "category": "dax", "domain_ar": "الدوال التكرارية", "domain_en": "Iterator Functions", "ar": "فعل مبدأ تحويل السياق (Context Transition) عن قصد بوضع CALCULATE داخل الدالة التكرارية عند معالجة المقاييس.", "en": "Purposely trigger Context Transition by placing CALCULATE inside an iterator function when processing measures."},
+  {"id": 127, "category": "dax", "domain_ar": "ذكاء الوقت", "domain_en": "Time Intelligence", "ar": "احسب المجاميع التراكمية السنوية (YTD) والربعية (QTD) باستخدام دوال ذكاء الوقت المتخصصة والفعالة.", "en": "Calculate Year-to-Date (YTD) and Quarter-to-Date (QTD) running totals using specialized and efficient Time Intelligence functions."},
+  {"id": 128, "category": "dax", "domain_ar": "ذكاء الوقت", "domain_en": "Time Intelligence", "ar": "قس الأداء التاريخي مقارنة بنفس الفترة من العام السابق (YoY) عبر توظيف دالة SAMEPERIODLASTYEAR للتقييم السريع.", "en": "Measure historical performance compared to the Same Period Last Year (YoY) by employing the SAMEPERIODLASTYEAR function for quick evaluation."},
+  {"id": 129, "category": "dax", "domain_ar": "ذكاء الوقت", "domain_en": "Time Intelligence", "ar": "أنشئ متوسطات متحركة مرنة (Rolling Averages) باستخدام دالة DATESINPERIOD لتحليل الاتجاهات طويلة المدى واستبعاد التذبذب.", "en": "Create flexible Rolling Averages using the DATESINPERIOD function to analyze long-term trends and exclude volatility."},
+  {"id": 130, "category": "dax", "domain_ar": "ذكاء الوقت", "domain_en": "Time Intelligence", "ar": "استخرج أرصدة الفترات الختامية للمخزونات والبيانات المالية المعقدة عبر دوال CLOSINGBALANCEMONTH وأخواتها.", "en": "Extract closing period balances for inventory and complex financial data via CLOSINGBALANCEMONTH and its sister functions."},
+  {"id": 131, "category": "dax", "domain_ar": "أنماط التحليل", "domain_en": "Analysis Patterns", "ar": "صمم تصنيفات ديناميكية (Rankings) متينة لتحديد أفضل العناصر أداءً باستخدام دالة RANKX مع معاملات القيمة الكثيفة (Dense).", "en": "Design robust dynamic Rankings to identify top-performing elements using the RANKX function with Dense value parameters."},
+  {"id": 132, "category": "dax", "domain_ar": "أنماط التحليل", "domain_en": "Analysis Patterns", "ar": "طبق أنماط تصنيف (Pareto) المعيارية لمعرفة المنتجات الحيوية التي تشكل 80% من إيرادات المؤسسة الفعلية.", "en": "Apply standard Pareto classification patterns to find vital products constituting 80% of actual enterprise revenue."},
+  {"id": 133, "category": "dax", "domain_ar": "أنماط التحليل", "domain_en": "Analysis Patterns", "ar": "أنشئ سيناريوهات تقسيم الفئات (Banding) لفرز العملاء ديناميكياً استناداً إلى مقاييس متغيرة كالمبيعات التراكمية.", "en": "Create Banding scenarios to dynamically sort customers based on variable metrics like cumulative sales."},
+  {"id": 134, "category": "dax", "domain_ar": "أنماط التحليل", "domain_en": "Analysis Patterns", "ar": "وظف أنماط التحليل السلوكي (Cohort Analysis) لتتبع معدلات بقاء العملاء واختفائهم عبر فترات زمنية متعاقبة.", "en": "Employ Cohort Analysis patterns to track customer retention and churn rates across successive time periods."},
+  {"id": 135, "category": "dax", "domain_ar": "المنطق والتدقيق", "domain_en": "Logic and Auditing", "ar": "استخدم ISBLANK مقترنة بدالة COALESCE العصرية لتحويل القيم المفقودة إلى أصفار بسلاسة برمجية ومنع الفراغات المزعجة.", "en": "Use ISBLANK paired with the modern COALESCE function to smoothly convert missing values to zeros and prevent annoying blanks."},
+  {"id": 136, "category": "dax", "domain_ar": "المنطق والتدقيق", "domain_en": "Logic and Auditing", "ar": "استبدل سلسلة الشروط (IF) المتداخلة والمربكة باستخدام دالة SWITCH(TRUE(),...) لبناء أكواد شرطية متينة ومقروءة.", "en": "Replace confusing nested IF conditions by using the SWITCH(TRUE(),...) function to build robust and readable conditional code."},
+  {"id": 137, "category": "dax", "domain_ar": "المنطق والتدقيق", "domain_en": "Logic and Auditing", "ar": "اختبر وجود فلاتر مباشرة باستخدام وظيفتي ISFILTERED و ISCROSSFILTERED لإظهار رسائل مخصصة في حال عدم تحديد خيارات.", "en": "Test for direct filters using ISFILTERED and ISCROSSFILTERED functions to show custom messages when no options are selected."},
+  {"id": 138, "category": "dax", "domain_ar": "المنطق والتدقيق", "domain_en": "Logic and Auditing", "ar": "وظف HASONEVALUE لاكتشاف مستويات الهرمية في العرض لمنع عرض مجاميع فرعية خادعة في مستويات عليا غير منطقية.", "en": "Employ HASONEVALUE to detect hierarchy levels in the view to prevent showing deceptive subtotals at illogical higher levels."},
+  {"id": 139, "category": "dax", "domain_ar": "استعلامات منفصلة", "domain_en": "Isolated Queries", "ar": "افتح محرر استعلامات DAX المدمج لكتابة وتقييم التعبيرات في شكل جداول مرئية فورية (DEF MSG) لاختبار دقتها المنطقية.", "en": "Open the built-in DAX Query view to write and evaluate expressions as instant visual tables (DEF MSG) to test their logical accuracy."},
+  {"id": 140, "category": "dax", "domain_ar": "استعلامات منفصلة", "domain_en": "Isolated Queries", "ar": "استخدم دالة DATATABLE المتقدمة لبرمجة جداول بيانات ثابتة مدمجة تماماً في كود DAX لتلبية احتياجات القواميس السريعة.", "en": "Use the advanced DATATABLE function to program hardcoded data tables fully integrated into DAX code to meet quick dictionary needs."},
+  {"id": 141, "category": "dax", "domain_ar": "الأداء المتقدم", "domain_en": "Advanced Performance", "ar": "تتبع استخدام الدوال الإحصائية المعقدة كالانحراف المعياري (STDEV.S) وتأكد من تطبيقها حصراً على مجموعات بيانات مفلترة.", "en": "Track the use of complex statistical functions like Standard Deviation (STDEV.S) and ensure they are applied exclusively to filtered datasets."},
+  {"id": 142, "category": "dax", "domain_ar": "الأداء المتقدم", "domain_en": "Advanced Performance", "ar": "استخدم دوال الدمج النصي المتكررة (CONCATENATEX) لاستخراج واستعراض أسماء المشاريع المحددة في عناوين اللوحات بمرونة.", "en": "Use iterative text concatenation functions (CONCATENATEX) to flexibly extract and display selected project names in dashboard titles."},
+  {"id": 143, "category": "dax", "domain_ar": "الأداء المتقدم", "domain_en": "Advanced Performance", "ar": "احسب أعداد العملاء أو الفواتير الفريدة بحذر باستخدام DISTINCTCOUNT، واللجوء لـ APPROXIMATEDISTINCTCOUNT للأداء الأسرع.", "en": "Carefully calculate distinct counts of customers or invoices using DISTINCTCOUNT, and resort to APPROXIMATEDISTINCTCOUNT for faster performance."},
+  {"id": 144, "category": "dax", "domain_ar": "دوال المعلومات", "domain_en": "Information Functions", "ar": "راجع هيكلية النموذج داخلياً باستخدام دوال (INFO) التي تتصل مباشرة بوجهات الإدارة (DMVs) لاستخراج بيانات وصفية مفصلة عن النظام.", "en": "Internally review model architecture using INFO functions that connect directly to DMVs to extract detailed system metadata."},
+  {"id": 145, "category": "dax", "domain_ar": "دوال النصوص", "domain_en": "Text Functions", "ar": "نظف واستكشف الأنماط النصية ضمن الحسابات باستخدام وظائف SEARCH و CONTAINSSTRING المتقدمة.", "en": "Clean and explore text patterns within calculations using advanced SEARCH and CONTAINSSTRING functions."},
+  {"id": 146, "category": "dax", "domain_ar": "التوثيق", "domain_en": "Documentation", "ar": "اكتب تعليقات شارحة ومفصلة باستخدام الرموز // للأسطر الفردية أو /* */ للكتل النصية لتوثيق المنطق الرياضي المعقد للمطورين.", "en": "Write detailed explanatory comments using // for single lines or /* */ for text blocks to document complex mathematical logic for developers."},
+  {"id": 147, "category": "dax", "domain_ar": "المراجعة الحسابية", "domain_en": "Calculation Review", "ar": "نفذ مقاييس فروقات التواريخ الدقيقة لتحديد أيام العمل الفعلية لعمليات التسليم باستخدام دوال الشبكات الزمنية (Networkdays).", "en": "Implement precise date difference measures to determine actual working days for delivery operations using Networkdays functions."},
+  {"id": 148, "category": "dax", "domain_ar": "المراجعة الحسابية", "domain_en": "Calculation Review", "ar": "عطل ميزة الفرز الخفي الذي قد يُفسد دوال ذكاء الوقت بالتأكد من احتواء الجداول الزمنية على التنسيقات الرقمية المطلوبة.", "en": "Disable the hidden sorting feature that might corrupt time intelligence functions by ensuring time tables contain the required numeric formats."},
+  {"id": 149, "category": "dax", "domain_ar": "الميزات الحديثة", "domain_en": "Modern Features", "ar": "صمم واستخدم دوال DAX المخصصة للمستخدم (User-defined functions) المضافة في تحديثات 2026 لتبسيط تكرار المعادلات.", "en": "Design and utilize User-defined functions (UDFs) added in 2026 updates to simplify repeating formulas."},
+  {"id": 150, "category": "dax", "domain_ar": "الميزات الحديثة", "domain_en": "Modern Features", "ar": "طبق الحسابات المرئية المبتكرة (Visual Calculations) لإجراء عمليات رياضية مشابهة لـ Excel (مثل إحالات الصفوف) داخل المرئيات مباشرة.", "en": "Apply innovative Visual Calculations to perform Excel-like mathematical operations (e.g., row references) directly inside visuals."},
+  {"id": 151, "category": "visualization", "domain_ar": "التخطيط العام", "domain_en": "General Layout", "ar": "حدد الغرض الوظيفي للوحة المعلومات (تنفيذية، تحليلية، تشغيلية) وصمم مستوى التفاصيل المعروضة ليتوافق معه تماماً.", "en": "Determine the functional purpose of the dashboard (executive, analytical, operational) and perfectly align the displayed level of detail."},
+  {"id": 152, "category": "visualization", "domain_ar": "التخطيط العام", "domain_en": "General Layout", "ar": "طبق نظام الشبكة الهندسية (Grid System) لضمان المحاذاة العمودية والأفقية المتوازنة والمثالية لكافة العناصر.", "en": "Apply a Grid System to ensure perfectly balanced vertical and horizontal alignment for all elements."},
+  {"id": 153, "category": "visualization", "domain_ar": "التخطيط العام", "domain_en": "General Layout", "ar": "استخدم المساحات البيضاء (White Space) لفصل الأقسام المنطقية وتقليص الشعور بالازدحام والفوضى البصرية بفاعلية.", "en": "Use White Space to effectively separate logical sections and reduce the feeling of visual clutter and chaos."},
+  {"id": 154, "category": "visualization", "domain_ar": "الاختيار المرئي", "domain_en": "Visual Selection", "ar": "اختر أنواع المخططات المناسبة بعناية وابتعد عن استخدام المخططات الدائرية (Pie Charts) الدقيقة ذات الفئات الكثيرة.", "en": "Carefully choose appropriate chart types and avoid using granular Pie Charts with many categories."},
+  {"id": 155, "category": "visualization", "domain_ar": "الاختيار المرئي", "domain_en": "Visual Selection", "ar": "قيد عدد المرئيات الكلية في الصفحة الواحدة للحفاظ على التركيز وتسريع زمن الاستجابة الفوري للتقرير.", "en": "Limit the total number of visuals per page to maintain focus and accelerate the report's instant response time."},
+  {"id": 156, "category": "visualization", "domain_ar": "التنسيق", "domain_en": "Formatting", "ar": "وظف الخطوط القياسية بشكل ثابت وحافظ على تدرج أحجام العناوين والنصوص لتعزيز التسلسل الهرمي للمعلومات.", "en": "Consistently employ standard fonts and maintain font size hierarchy for headings and text to enhance information hierarchy."},
+  {"id": 157, "category": "visualization", "domain_ar": "التنسيق", "domain_en": "Formatting", "ar": "راجع التنسيقات الرقمية المطبقة وتأكد من ظهور الفواصل العشرية وتنسيق العملات بما يتناسب مع المعايير المؤسسية.", "en": "Review applied numeric formatting and ensure decimal separators and currency formatting align with corporate standards."},
+  {"id": 158, "category": "visualization", "domain_ar": "التنسيق", "domain_en": "Formatting", "ar": "عطل العرض التلقائي للوحدات المليونية (Auto Units) متى ما تسببت بإخفاء التفاوتات الدقيقة في التسميات التوضيحية.", "en": "Disable Auto Units (millions) display whenever it hides subtle variances in data labels."},
+  {"id": 159, "category": "visualization", "domain_ar": "التنسيق", "domain_en": "Formatting", "ar": "تخلص من فوضى الرسوم (Chart Junk) بحذف خطوط الشبكة والمحاور غير الضرورية والعناوين المتكررة والمزعجة.", "en": "Eliminate Chart Junk by removing unnecessary gridlines, axes, and redundant, distracting titles."},
+  {"id": 160, "category": "visualization", "domain_ar": "التفاعل والتنقل", "domain_en": "Interaction and Navigation", "ar": "صمم واجهات تنقل مخصصة (Navigation Bars) عبر الأزرار والصور لتسهيل الانتقال البديهي بين أقسام التقرير.", "en": "Design custom Navigation Bars using buttons and images to facilitate intuitive transitioning between report sections."},
+  {"id": 161, "category": "visualization", "domain_ar": "التفاعل والتنقل", "domain_en": "Interaction and Navigation", "ar": "أنشئ أزرار بحث متعمق (Drill-through) لنقل المستخدم بسلاسة من الرؤى الإجمالية إلى التفاصيل الجوهرية الدقيقة.", "en": "Create Drill-through buttons to smoothly transition the user from aggregated insights to granular core details."},
+  {"id": 162, "category": "visualization", "domain_ar": "التفاعل والتنقل", "domain_en": "Interaction and Navigation", "ar": "خصص صفحات لتلميحات الأدوات (Custom Tooltips) لعرض مرئيات مصغرة عند تمرير مؤشر الماوس بدلاً من النصوص المملة.", "en": "Dedicate pages for Custom Tooltips to display miniature visuals on mouse hover instead of boring text."},
+  {"id": 163, "category": "visualization", "domain_ar": "التفاعل والتنقل", "domain_en": "Interaction and Navigation", "ar": "أخفِ جميع صفحات التلميحات وصفحات التفاصيل التحليلية من قائمة التنقل الأساسية لعدم تشتيت انتباه المستخدم النهائي.", "en": "Hide all tooltip and analytical detail pages from the main navigation pane to avoid distracting the end user."},
+  {"id": 164, "category": "visualization", "domain_ar": "الإشارات", "domain_en": "Bookmarks", "ar": "استخدم الإشارات المرجعية (Bookmarks) لحفظ وعرض حالات وتقارير متعددة ضمن مساحة الصفحة الواحدة بذكاء استثنائي.", "en": "Use Bookmarks to exceptionally and intelligently save and display multiple states and reports within a single page space."},
+  {"id": 165, "category": "visualization", "domain_ar": "الإشارات", "domain_en": "Bookmarks", "ar": "رتب وجمع المرئيات داخل لوحة التحديد (Selection Pane) لإنشاء تأثيرات تفاعلية ديناميكية ونوافذ منبثقة مخصصة.", "en": "Arrange and group visuals inside the Selection Pane to create dynamic interactive effects and custom pop-ups."},
+  {"id": 166, "category": "visualization", "domain_ar": "الفلترة", "domain_en": "Filtering", "ar": "وظف محددات العرض المنسدلة (Dropdown Slicers) بديلاً عن القوائم الطويلة لتوفير المساحة المحدودة في اللوحة.", "en": "Employ Dropdown Slicers instead of long lists to save limited space on the canvas."},
+  {"id": 167, "category": "visualization", "domain_ar": "الفلترة", "domain_en": "Filtering", "ar": "زامن محددات العرض (Sync Slicers) لضمان انتقال اختيارات التصفية بمرونة وانسجام بين صفحات التقرير المتعددة.", "en": "Sync Slicers to ensure filtering selections transfer flexibly and harmoniously across multiple report pages."},
+  {"id": 168, "category": "visualization", "domain_ar": "الفلترة", "domain_en": "Filtering", "ar": "عدل تفاعلات المرئيات الافتراضية (Edit Interactions) لإيقاف الفلترة المتقاطعة العشوائية التي تؤدي إلى نتائج مبهمة أو بطء شديد.", "en": "Edit Interactions to stop random cross-filtering that leads to obscure results or severe sluggishness."},
+  {"id": 169, "category": "visualization", "domain_ar": "إمكانية الوصول", "domain_en": "Accessibility", "ar": "تحقق من مطابقة تباين الألوان بنسبة لا تقل عن 4.5:1 بين النصوص الأساسية والخلفيات لتلبية معايير (WCAG 2.1).", "en": "Verify a color contrast ratio of at least 4.5:1 between base text and backgrounds to meet WCAG 2.1 standards."},
+  {"id": 170, "category": "visualization", "domain_ar": "إمكانية الوصول", "domain_en": "Accessibility", "ar": "أضف النصوص البديلة (Alt Text) لجميع العناصر المرئية غير الزخرفية لتفعيل الدعم الشامل لقارئات الشاشة الآلية.", "en": "Add Alt Text to all non-decorative visual elements to enable comprehensive support for automated screen readers."},
+  {"id": 171, "category": "visualization", "domain_ar": "إمكانية الوصول", "domain_en": "Accessibility", "ar": "تحقق من كفاءة ووضوح اللوحة للمستخدمين المصابين بعمى الألوان عبر تفعيل المرشحات اللونية المتخصصة للاختبار.", "en": "Verify canvas efficiency and clarity for color-blind users by activating specialized color filters for testing."},
+  {"id": 172, "category": "visualization", "domain_ar": "إمكانية الوصول", "domain_en": "Accessibility", "ar": "تجنب الاعتماد على اللون وحده كطريقة لتمييز الحالات (كاستخدام الأخضر والأحمر)، ودعمه برموز أو نصوص إضافية واضحة.", "en": "Avoid relying on color alone to distinguish statuses (like using green and red), and support it with clear icons or text."},
+  {"id": 173, "category": "visualization", "domain_ar": "إمكانية الوصول", "domain_en": "Accessibility", "ar": "حدد ترتيب النقل المتسلسل (Tab Order) لتمكين المستخدمين من تصفح العناصر بسلاسة باستخدام لوحة المفاتيح وحدها.", "en": "Define the Tab Order to enable users to smoothly navigate elements using only the keyboard."},
+  {"id": 174, "category": "visualization", "domain_ar": "إمكانية الوصول", "domain_en": "Accessibility", "ar": "ضع علامات إخفاء للأشكال الزخرفية البحتة في ترتيب التنقل لكي لا تقرأها الأجهزة وتشتت التركيز المعرفي للباحثين.", "en": "Mark purely decorative shapes as hidden in the tab order so machines do not read them and distract researchers' cognitive focus."},
+  {"id": 175, "category": "visualization", "domain_ar": "عرض الجوال", "domain_en": "Mobile View", "ar": "صمم تخطيطاً مخصصاً بالكامل للهواتف الذكية (Mobile Layout) للتقارير التنفيذية ومؤشرات الأداء الحرجة للإدارة العليا.", "en": "Design a fully customized Mobile Layout for executive reports and critical KPIs for senior management."},
+  {"id": 176, "category": "visualization", "domain_ar": "عرض الجوال", "domain_en": "Mobile View", "ar": "انتقِ المرئيات المفصلية ومؤشرات (KPIs) فقط لعرضها في نسخة الجوال لاستغلال المساحة الرأسية المحدودة بكفاءة عالية.", "en": "Select only pivotal visuals and KPIs for display in the mobile version to highly efficiently utilize limited vertical space."},
+  {"id": 177, "category": "visualization", "domain_ar": "عرض الجوال", "domain_en": "Mobile View", "ar": "كبر أحجام أزرار الانتقال ومحددات عرض البيانات لتسهيل التفاعل المريح والنقر بأطراف الأصابع على الشاشات اللمسية.", "en": "Enlarge navigation buttons and data slicers to facilitate comfortable interaction and fingertip tapping on touch screens."},
+  {"id": 178, "category": "visualization", "domain_ar": "التخصيص", "domain_en": "Customization", "ar": "فعل ميزة التخصيص الذاتي للمستخدمين (Personalize Visuals) لمنح المحللين حرية استبدال المحاور أو تعديل المخططات مؤقتاً.", "en": "Enable the Personalize Visuals feature to give analysts the freedom to temporarily swap axes or modify charts."},
+  {"id": 179, "category": "visualization", "domain_ar": "التخصيص", "domain_en": "Customization", "ar": "استخدم نسق التقرير الموحد (Report Themes) المعتمد على ملفات JSON لفرض الهوية المؤسسية آلياً على كافة الأعمال.", "en": "Use standardized JSON-based Report Themes to automatically enforce corporate identity across all deliverables."},
+  {"id": 180, "category": "visualization", "domain_ar": "التحديث الآلي", "domain_en": "Automated Refresh", "ar": "طبق ميزة التحديث التلقائي للصفحات (Automatic Page Refresh) للجداول المباشرة لمراقبة البيانات اللحظية والحرجة آلياً.", "en": "Apply the Automatic Page Refresh feature to direct query tables to automatically monitor live and critical data."},
+  {"id": 181, "category": "admin", "domain_ar": "التوثيق", "domain_en": "Documentation", "ar": "صمم صفحة \"حول اللوحة\" (About Page) لتفسير وتوثيق نطاق البيانات وتاريخ السحب الأخير ومنهجية المعادلات الحسابية.", "en": "Design an \"About Page\" to explain and document data scope, last extract date, and calculation methodologies."},
+  {"id": 182, "category": "visualization", "domain_ar": "الذكاء البصري", "domain_en": "Visual Intelligence", "ar": "صمم لوحات التلخيص السردي للذكاء الاصطناعي (AI Narrative) لتوليد تقارير نصية ديناميكية تختصر الرؤى المعقدة بسرعة فائقة.", "en": "Design AI Narrative summary panels to generate dynamic text reports that rapidly summarize complex insights."},
+  {"id": 183, "category": "visualization", "domain_ar": "الخرائط", "domain_en": "Maps", "ar": "اختبر تفاعلية وتنسيقات الخرائط المكانية وتأكد من تفعيل توافق (Azure Maps) لتحسين العرض البصري الجغرافي.", "en": "Test spatial map interactivity and formatting and ensure Azure Maps compatibility is enabled to enhance geographic visual display."},
+  {"id": 184, "category": "visualization", "domain_ar": "التنسيق", "domain_en": "Formatting", "ar": "خصص عناوين مرئية واضحة (Visual Titles) ودقيقة ومركزة، مع التخلص من العناوين الآلية الطويلة المربكة.", "en": "Assign clear, precise, and focused Visual Titles, discarding confusingly long automated titles."},
+  {"id": 185, "category": "visualization", "domain_ar": "التحديثات", "domain_en": "Updates", "ar": "فعل التحديثات المستحدثة لبطاقات العرض (Card Visual Updates) لإنشاء ملخصات قياسية احترافية متعددة الأبعاد.", "en": "Activate updated Card Visual Updates to create professional multidimensional standard summaries."},
+  {"id": 186, "category": "visualization", "domain_ar": "التحديثات", "domain_en": "Updates", "ar": "استبدل محددات العرض القديمة بنسخة (List and Button Slicers) المتقدمة من تحديثات 2026 لتثبيت التنسيق البصري.", "en": "Replace legacy slicers with the advanced List and Button Slicers from the 2026 updates to solidify visual layout."},
+  {"id": 187, "category": "visualization", "domain_ar": "الاستكشاف", "domain_en": "Exploration", "ar": "أدمج مخطط مسار التفرع (Decomposition Tree) كأداة تفاعلية متفوقة تتيح الاستكشاف الذاتي للمتغيرات والمؤثرات الإحصائية الكامنة.", "en": "Integrate the Decomposition Tree as a superior interactive tool allowing self-exploration of underlying statistical variables and drivers."},
+  {"id": 188, "category": "admin", "domain_ar": "المراجعة", "domain_en": "Review", "ar": "اختبر وظيفة عرض جدول البيانات (Show Data Table) للتحقق من شمولية وسهولة إتاحة الأرقام الفعلية للمهتمين بالتفاصيل.", "en": "Test the Show Data Table function to verify comprehensiveness and easy availability of actual numbers for detail-oriented users."},
+  {"id": 189, "category": "admin", "domain_ar": "المراجعة", "domain_en": "Review", "ar": "تأكد من تفعيل التنسيق الشرطي (Conditional Formatting) لتوجيه الأنظار مباشرة لحالات القصور الاستثنائية بوضوح متناهٍ.", "en": "Ensure Conditional Formatting is enabled to direct attention instantly and clearly to exceptional shortcomings."},
+  {"id": 190, "category": "admin", "domain_ar": "المراجعة", "domain_en": "Review", "ar": "راجع خيارات التصدير المتوفرة لكل مرئية (Export Options) وتأكد من أنها متوافقة تماماً مع معايير الأمان المعتمدة داخلياً.", "en": "Review Export Options available for each visual and ensure they fully comply with internally approved security standards."},
+  {"id": 191, "category": "admin", "domain_ar": "قياس الأداء", "domain_en": "Performance Measurement", "ar": "افتح \"محلل الأداء\" (Performance Analyzer) في البرنامج لالتقاط وتوثيق أوقات الاستجابة الدقيقة لجميع المرئيات الظاهرة.", "en": "Open the Performance Analyzer in Power BI Desktop to capture and document exact response times for all visible visuals."},
+  {"id": 192, "category": "admin", "domain_ar": "قياس الأداء", "domain_en": "Performance Measurement", "ar": "انسخ استعلامات DAX التي تسجل أوقات تنفيذ بطيئة لتحليل هيكليتها العميقة ضمن بيئة أداة (DAX Studio) الخارجية.", "en": "Copy DAX queries that record slow execution times to analyze their deep structure within the external DAX Studio environment."},
+  {"id": 193, "category": "admin", "domain_ar": "قياس الأداء", "domain_en": "Performance Measurement", "ar": "استخدم الأداة المحترفة (Measure Killer) للفحص الدوري واكتشاف وتدمير جميع المقاييس والأعمدة غير المستخدمة إطلاقاً باللوحات.", "en": "Use the professional tool Measure Killer to periodically scan, discover, and destroy all measures and columns never used in dashboards."},
+  {"id": 194, "category": "modeling", "domain_ar": "تحسين النماذج", "domain_en": "Model Optimization", "ar": "افحص استهلاك الذاكرة التفصيلي لكل جدول وعمود باستخدام أداة (VertiPaq Analyzer) الفائقة لضبط الميزانية الاستيعابية.", "en": "Examine detailed memory consumption for each table and column using the superb VertiPaq Analyzer tool to tune the capacity budget."},
+  {"id": 195, "category": "modeling", "domain_ar": "تحسين النماذج", "domain_en": "Model Optimization", "ar": "قلص أحجام الأعمدة ذات القيم المعقدة باستخدام تقنيات التحويل المسبق لتوسيع آفاق تشفير طول التشغيل الفعال الموفر.", "en": "Shrink the size of complex value columns using pre-transformation techniques to broaden the horizons of effective, saving Run-Length Encoding."},
+  {"id": 196, "category": "dax", "domain_ar": "تحسين DAX", "domain_en": "DAX Optimization", "ar": "حدد وعالج التعبيرات الرياضية التي يتجاوز وقت تقييمها ثانية واحدة، واستبدل الوظائف التكرارية المتداخلة بمتغيرات تخزينية ذكية.", "en": "Identify and resolve mathematical expressions whose evaluation time exceeds one second, and replace nested iterators with smart storage variables."},
+  {"id": 197, "category": "dax", "domain_ar": "تحسين DAX", "domain_en": "DAX Optimization", "ar": "تجنب استخدام دوال الفلترة المطلقة وتصفية الجداول الكاملة، واعتمد بدلاً من ذلك على تصفية أعمدة فريدة ومحددة جداً.", "en": "Avoid using absolute filtering functions and full table filtering, relying instead on filtering highly specific unique columns."},
+  {"id": 198, "category": "visualization", "domain_ar": "تحسين الواجهة", "domain_en": "Interface Optimization", "ar": "قلل الكثافة البصرية في اللوحة الواحدة، واستعض عن التكديس المبالغ فيه بدمج اللوحات المخفية المستدعاة عبر الإشارات المرجعية.", "en": "Reduce visual density on a single canvas, and replace excessive stacking by merging hidden canvases invoked via bookmarks."},
+  {"id": 199, "category": "visualization", "domain_ar": "تحسين الواجهة", "domain_en": "Interface Optimization", "ar": "خفض عدد محددات العرض المنفصلة المنتشرة في الصفحة واستبدلها كلياً بالاعتماد الجذري على لوحة الفلاتر المركزية (Filter Pane).", "en": "Decrease the number of scattered individual slicers on the page and entirely replace them by heavily relying on the central Filter Pane."},
+  {"id": 200, "category": "admin", "domain_ar": "تحسين التحديث", "domain_en": "Refresh Optimization", "ar": "هيئ ميزة التحديث التزايدي القوية (Incremental Refresh) لجداول المعاملات المالية المليارية لسحب البيانات المتغيرة حديثاً فقط.", "en": "Configure the powerful Incremental Refresh feature for billion-row financial transaction tables to pull only recently changed data."},
+  {"id": 201, "category": "admin", "domain_ar": "تحسين التحديث", "domain_en": "Refresh Optimization", "ar": "فعل التحميل المتوازي (Parallel Loading) المتقدم للجداول المستقلة لتقصير المدة الإجمالية للتحديثات اليومية على السحابة.", "en": "Enable advanced Parallel Loading for independent tables to shorten the overall duration of daily cloud refreshes."},
+  {"id": 202, "category": "modeling", "domain_ar": "الاستعلام المباشر", "domain_en": "DirectQuery", "ar": "حسّن وزرع الفهارس الهيكلية (Indexes) المترابطة على قواعد نظام (SQL Server) لدعم وتسريع وتيرة استعلامات DirectQuery الصارمة.", "en": "Optimize and plant interconnected structural Indexes on source SQL Server databases to aggressively support and speed up DirectQuery execution."},
+  {"id": 203, "category": "modeling", "domain_ar": "الاستعلام المباشر", "domain_en": "DirectQuery", "ar": "تجنب تمرير جمل الاستعلام المعقدة كالتجميع GROUP BY واعتمد استراتيجية الربط الداخلي المبسط INNER JOIN لتخفيف الأحمال.", "en": "Avoid passing complex query statements like GROUP BY and adopt a simplified INNER JOIN strategy to lighten loads."},
+  {"id": 204, "category": "visualization", "domain_ar": "الإضافات البصرية", "domain_en": "Custom Visuals", "ar": "اختبر أداء المرئيات المخصصة المستوردة (Custom Visuals) بصرامة وتأكد أنها خالية من الأكواد الخبيثة والمستهلكة لطاقة المعالجة.", "en": "Rigorously test the performance of imported Custom Visuals and ensure they are free of malicious, processing-heavy code."},
+  {"id": 205, "category": "visualization", "domain_ar": "الصور والخلفيات", "domain_en": "Images and Backgrounds", "ar": "حسّن دقة وحجم ملفات الصور الثابتة والشعارات المستخدمة في الخلفيات لضمان تحميل اللوحة بسلاسة فائقة للمتصفحات.", "en": "Optimize the resolution and file size of static images and logos used in backgrounds to ensure ultra-smooth canvas loading for browsers."},
+  {"id": 206, "category": "modeling", "domain_ar": "تفاعلات سلبية", "domain_en": "Negative Interactions", "ar": "راجع وعطل سلوكيات التصفية المتبادلة (Cross-Filtering) التلقائية غير المفيدة متى ما تسببت في استدعاءات متكررة وفوضوية لمعادلات DAX.", "en": "Review and disable unhelpful automatic Cross-Filtering behaviors whenever they cause chaotic and repetitive DAX equation calls."},
+  {"id": 207, "category": "admin", "domain_ar": "معالجات سريعة", "domain_en": "Quick Fixes", "ar": "امسح ذاكرة التخزين المؤقت محلياً للمطور لحل مشاكل تهنيج وبطء واجهة الاستخدام المستعصية بشكل طارئ.", "en": "Clear the developer's local cache to urgently resolve stubborn sluggishness and UI freezing issues."},
+  {"id": 208, "category": "admin", "domain_ar": "معالجات سريعة", "domain_en": "Quick Fixes", "ar": "اختبر تقليل عدد العمليات المعقدة في وقت التصميم عن طريق إيقاف تحديث الواجهة التلقائي عند سحب وإفلات الحقول الثقيلة.", "en": "Test reducing the number of complex operations at design time by pausing automatic visual refresh when dragging and dropping heavy fields."},
+  {"id": 209, "category": "admin", "domain_ar": "التكامل السحابي", "domain_en": "Cloud Integration", "ar": "تحقق من مؤشرات الأداء الخاصة بالاتصال المباشر بقواعد بحيرات البيانات السحابية وضبط مهل الانتظار المناسبة لتفادي الإحباط.", "en": "Verify KPIs for direct connection to cloud data lake databases and adjust appropriate timeout settings to avoid frustration."},
+  {"id": 210, "category": "admin", "domain_ar": "التكامل السحابي", "domain_en": "Cloud Integration", "ar": "فعل أداة الفحص الإحصائي لـ (Query Dependencies) لمتابعة تفرعات الجداول المتكلفة وضغطها عند المصدر.", "en": "Enable the Query Dependencies statistical scanning tool to track convoluted table branches and compress them at the source."},
+  {"id": 211, "category": "admin", "domain_ar": "مساحات العمل", "domain_en": "Workspaces", "ar": "أنشئ مساحات عمل (Workspaces) متوافقة مع معايير تسمية مؤسسية تشير الغرض والبيئة المقصودة صراحة (Dev/Test/Prod).", "en": "Create Workspaces compliant with enterprise naming standards that explicitly indicate the purpose and intended environment (Dev/Test/Prod)."},
+  {"id": 212, "category": "admin", "domain_ar": "مساحات العمل", "domain_en": "Workspaces", "ar": "عين مسؤولي مساحة العمل والأعضاء (Admins/Members) بحرص لتطبيق مبدأ \"أقل امتياز ممكن\" للسلامة.", "en": "Carefully assign Workspace Admins and Members to apply the \"Least Privilege\" principle for safety."},
+  {"id": 213, "category": "admin", "domain_ar": "مساحات العمل", "domain_en": "Workspaces", "ar": "حدد فئات المستهلكين النهائيين للمعلومات كمشاهدين (Viewers) للحفاظ على حصانة وسرية البيانات من التعديلات المجهولة.", "en": "Define end-consumers of information as Viewers to maintain data immunity and confidentiality from unknown modifications."},
+  {"id": 214, "category": "admin", "domain_ar": "نشر التطبيقات", "domain_en": "App Publishing", "ar": "انشر النماذج والتقارير المعتمدة عبر حزم التطبيقات السحابية (Apps) لتوزيعها بفاعلية على مئات المستفيدين التنفيذيين.", "en": "Publish approved models and reports via Cloud Apps to efficiently distribute them to hundreds of executive beneficiaries."},
+  {"id": 215, "category": "admin", "domain_ar": "نشر التطبيقات", "domain_en": "App Publishing", "ar": "فعل الميزة التوجيهية (Featured Content) لدفع التقارير الحرجة للصفحة الرئيسية وتسهيل العثور عليها للموظفين الجدد.", "en": "Enable the Featured Content directive to push critical reports to the Home page and make them easier to find for new employees."},
+  {"id": 216, "category": "admin", "domain_ar": "نشر التطبيقات", "domain_en": "App Publishing", "ar": "ادمج لوحات المعلومات المهمة ضمن قنوات منصة (Microsoft Teams) لدعم المناقشات المباشرة حول التحليلات الحية.", "en": "Embed critical dashboards within Microsoft Teams channels to support direct discussions around live analytics."},
+  {"id": 217, "category": "admin", "domain_ar": "إدارة البوابات", "domain_en": "Gateway Management", "ar": "صمم ونصب عبارة البيانات المؤسسية (Data Gateway) بوضع التوافر العالي لتحديث قواعد البيانات الموجودة ضمن السيرفرات المحلية.", "en": "Design and install the Enterprise Data Gateway in high availability mode to refresh databases located within on-premises servers."},
+  {"id": 218, "category": "admin", "domain_ar": "إدارة البوابات", "domain_en": "Gateway Management", "ar": "هيئ اتصالات البوابة المركزية مع خوادم (SQL) وتأكد من إدخال مسوغات التوثيق والأمان (Credentials) دون كشفها للمبرمجين.", "en": "Configure centralized gateway connections to SQL servers and ensure authentication Credentials are entered without exposing them to developers."},
+  {"id": 219, "category": "admin", "domain_ar": "إدارة البوابات", "domain_en": "Gateway Management", "ar": "جدول أوقات التحديث الآلي للبيانات حصرياً خارج أوقات الذروة الوظيفية (Off-Peak Hours) للحفاظ على طاقة الخوادم.", "en": "Schedule automated data refresh times exclusively during Off-Peak Hours to preserve server capacity."},
+  {"id": 220, "category": "admin", "domain_ar": "إدارة البوابات", "domain_en": "Gateway Management", "ar": "أضف مستلمين تقنيين محددين لإشعارات فشل التحديث التلقائي لضمان المبادرة باتخاذ إجراءات صيانة فورية وجذرية.", "en": "Add specific technical recipients to automatic refresh failure notifications to ensure immediate and radical maintenance actions are initiated."},
+  {"id": 221, "category": "admin", "domain_ar": "مسارات النشر", "domain_en": "Deployment Pipelines", "ar": "قم بتأسيس \"مسارات النشر\" المنظمة (Deployment Pipelines) لإدارة تنقلات المحتوى بسلاسة وأمان بين التطوير والإنتاج.", "en": "Establish structured Deployment Pipelines to seamlessly and securely manage content migration between development and production."},
+  {"id": 222, "category": "admin", "domain_ar": "مسارات النشر", "domain_en": "Deployment Pipelines", "ar": "عيّن مساحة عمل وظيفية خاصة بكل مرحلة انسيابية ضمن المسار لفصل بنية النماذج وتأمينها تماماً.", "en": "Assign a specific functional workspace for each fluid stage within the pipeline to isolate and fully secure the model architecture."},
+  {"id": 223, "category": "admin", "domain_ar": "مسارات النشر", "domain_en": "Deployment Pipelines", "ar": "هيئ \"قواعد النشر\" الديناميكية (Deployment Rules) لتبديل المعلمات ومصادر الاتصال تلقائياً عند الدفع لبيئة الإنتاج الرسمية.", "en": "Configure dynamic Deployment Rules to automatically swap parameters and connection sources when pushing to the official production environment."},
+  {"id": 224, "category": "admin", "domain_ar": "مسارات النشر", "domain_en": "Deployment Pipelines", "ar": "ادمج مساحات العمل الحساسة مع مستودعات (Git) و (Azure DevOps) لتمكين ميزة التحكم المنهجي وتتبع الإصدارات السابقة.", "en": "Integrate sensitive workspaces with Git repositories and Azure DevOps to enable systematic version control and tracking."},
+  {"id": 225, "category": "admin", "domain_ar": "مسارات النشر", "domain_en": "Deployment Pipelines", "ar": "اختبر دقة النماذج عبر إطلاق سلسلة تجارب القبول (UAT) في مرحلة الاختبار الوسطية قبل الترقية الجماهيرية.", "en": "Test model accuracy by launching a series of User Acceptance Testing (UAT) in the intermediate test phase before mass promotion."},
+  {"id": 226, "category": "admin", "domain_ar": "إعدادات المستأجر", "domain_en": "Tenant Settings", "ar": "راجع جميع ضوابط المستأجر الإدارية العميقة (Tenant Settings) وتأكد من امتثالها المحكم للسياسات الرقمية للمنظمة.", "en": "Review all deep administrative Tenant Settings and ensure their tight compliance with the organization's digital policies."},
+  {"id": 227, "category": "admin", "domain_ar": "إعدادات المستأجر", "domain_en": "Tenant Settings", "ar": "قيد الحرية المطلقة للمستخدمين بإنشاء مساحات العمل للحد من فوضى الاستضافة وتكرار التقارير وتشتت الموارد السحابية.", "en": "Restrict users' absolute freedom to create workspaces to limit hosting chaos, report duplication, and cloud resource fragmentation."},
+  {"id": 228, "category": "admin", "domain_ar": "إعدادات المستأجر", "domain_en": "Tenant Settings", "ar": "فعل خيار الاعتماد الموثوق (Certification) للإداريين وحصره عليهم لترسيخ تمييز النماذج الدلالية الرسمية فقط كمرجع للشركة.", "en": "Enable the Certification option exclusively for administrators to establish only official semantic models as the company's reference."},
+  {"id": 229, "category": "admin", "domain_ar": "إعدادات المستأجر", "domain_en": "Tenant Settings", "ar": "راجع بقسوة إعدادات تبادل وتصدير البيانات الخارجي لمنع التسريب غير المقصود لمعلومات الشركاء والمتعاملين ذوي الحساسية.", "en": "Strictly review external data sharing and export settings to prevent unintended leaks of sensitive partner and client information."},
+  {"id": 230, "category": "admin", "domain_ar": "إعدادات المستأجر", "domain_en": "Tenant Settings", "ar": "فعل خدمات جمع ومراقبة سجل التدقيق الشامل (Audit Logs) لتوثيق سلوكيات وتفاعلات وتنزيلات المستخدمين خطوة بخطوة.", "en": "Enable comprehensive Audit Logs collection and monitoring services to document user behaviors, interactions, and downloads step by step."},
+  {"id": 231, "category": "admin", "domain_ar": "إعدادات المستأجر", "domain_en": "Tenant Settings", "ar": "عطل بحزم خيار نشر التقارير المفتوح للجمهور على شبكة الإنترنت (Publish to Web) لمنع اختراق جدار الأمان السري للمؤسسة.", "en": "Firmly disable the open Publish to Web option to prevent breaching the organization's confidential security firewall."},
+  {"id": 232, "category": "admin", "domain_ar": "الأمان المتقدم", "domain_en": "Advanced Security", "ar": "عين وقيد أدوار الخدمة السحابية لتطابق صلاحيات الأمان على مستوى الصف (RLS) للسيطرة الآلية المطلقة على مقروئية البيانات.", "en": "Map and restrict cloud service roles to match Row-Level Security (RLS) permissions for absolute automated control over data readability."},
+  {"id": 233, "category": "admin", "domain_ar": "الأمان المتقدم", "domain_en": "Advanced Security", "ar": "طبق ملصقات ووسوم الحساسية المشفرة (Sensitivity Labels) عبر النظام لمنع فتح الملفات المصدرة للروابط المجهولة.", "en": "Apply encrypted Sensitivity Labels across the system to prevent exported files from being opened by unknown links."},
+  {"id": 234, "category": "admin", "domain_ar": "المراقبة الإدارية", "domain_en": "Administrative Monitoring", "ar": "أنشئ وقيم تقارير مقاييس الاستخدام (Usage Metrics) المدمجة لتحليل كثافة وتفضيلات المستخدمين للوحات التقارير المنشورة.", "en": "Generate and evaluate built-in Usage Metrics reports to analyze user density and preferences for published report dashboards."},
+  {"id": 235, "category": "admin", "domain_ar": "المراقبة الإدارية", "domain_en": "Administrative Monitoring", "ar": "استخرج تقارير مسح البيانات الوصفية (Metadata Scanning APIs) لدعم فرق التدقيق الخارجي وإعطاء خريطة هيكلية لممتلكات البيانات.", "en": "Extract Metadata Scanning APIs reports to support external auditing teams and provide a structural map of data estates."},
+  {"id": 236, "category": "admin", "domain_ar": "المراقبة الإدارية", "domain_en": "Administrative Monitoring", "ar": "استعن بالمطورين لتأسيس نظام مراقبة مستأجر باستخدام منصة بحيرة البيانات (Lakehouse) ودوائر الـ Semantic Link الاستراتيجية.", "en": "Engage developers to establish a tenant monitoring system using the Lakehouse platform and strategic Semantic Link circuits."},
+  {"id": 237, "category": "admin", "domain_ar": "حوكمة استراتيجية", "domain_en": "Strategic Governance", "ar": "أسس \"مركز التميز\" التشغيلي (CoE) الداخلي وأطلق أدوات حوكمته لضبط المنصة وترويض نموها المتصاعد بتوجيه منهجي واعٍ.", "en": "Establish an internal operational Center of Excellence (CoE) and launch its governance tools to control the platform and tame its exponential growth with systematic guidance."},
+  {"id": 238, "category": "admin", "domain_ar": "حوكمة استراتيجية", "domain_en": "Strategic Governance", "ar": "وجه وراسل المستخدمين الذين يمارسون أخطاءً متكررة (مثل التصدير الهائل للبيانات) بتقديم بدائل تحليلية ذكية داخل المنظومة.", "en": "Guide and message users who commit recurring errors (like massive data exporting) by providing smart analytical alternatives within the ecosystem."},
+  {"id": 239, "category": "admin", "domain_ar": "خيارات المطور", "domain_en": "Developer Options", "ar": "فعل واجهة المطور وحفظ التقارير المحورية بصيغة المشروع (PBIP) لدعم آليات الفحص والحفظ المتفرق للبيانات الوصفية.", "en": "Enable the developer interface and save pivotal reports in the Power BI Project (PBIP) format to support inspection mechanisms and granular metadata saving."},
+  {"id": 240, "category": "admin", "domain_ar": "خيارات المطور", "domain_en": "Developer Options", "ar": "استخدم صيغة (PBIR) لحفظ إعدادات وتنسيقات التقرير بطريقة تفصيلية تتيح تتبع الفروق السطرية بدقة تامة في أنظمة Git.", "en": "Use the PBIR format to save report settings and formatting in a detailed manner that allows precise line-by-line diff tracking in Git systems."},
+  {"id": 241, "category": "admin", "domain_ar": "الابتكار والتوليد", "domain_en": "Innovation and Generation", "ar": "فعل واستثمر قدرات مساعد الذكاء الاصطناعي (Copilot) لتمكين المسؤولين من توليد ملخصات تفاعلية والإجابة اللغوية على تعقيدات اللوحات.", "en": "Enable and leverage Copilot AI assistant capabilities to empower administrators to generate interactive summaries and linguistically answer dashboard complexities."},
+  {"id": 242, "category": "admin", "domain_ar": "الابتكار والتوليد", "domain_en": "Innovation and Generation", "ar": "صمم النماذج الدلالية بمعايير قياسية دقيقة لتكون \"مستعدة لتحليل الذكاء الاصطناعي\" ووضع علامات الحقول التوضيحية لتسهيل عمله.", "en": "Design semantic models with precise standard criteria to be \"AI-ready\" and tag explanatory fields to facilitate its operation."},
+  {"id": 243, "category": "dax", "domain_ar": "الحسابات الحديثة", "domain_en": "Modern Calculations", "ar": "طبق الحسابات المرئية التجريبية (Visual Calculations) للإشارة المرجعية المبسطة لعناصر سابقة والتلاعب بالأرقام داخل المخطط فقط.", "en": "Apply experimental Visual Calculations to simplify referencing previous elements and manipulating numbers exclusively within the chart."},
+  {"id": 244, "category": "modeling", "domain_ar": "الهندسة المستحدثة", "domain_en": "Novel Engineering", "ar": "دمج قدرات لغة عرض (TMDL) الثورية لاستعراض أكواد النمذجة وإدارة تعديلات الشيفرة بشكل قابل للقراءة وتسهيل عمليات (Git).", "en": "Integrate revolutionary TMDL capabilities to review modeling code and manage code modifications readably, facilitating Git operations."},
+  {"id": 245, "category": "modeling", "domain_ar": "الهندسة المستحدثة", "domain_en": "Novel Engineering", "ar": "وظف التخزين الفائق التطور (Direct Lake) في نماذجك القادمة للتعامل بمرونة مع ملفات باركيه (Parquet) المخزنة في النظام.", "en": "Employ highly advanced Direct Lake storage in upcoming models to flexibly handle Parquet files stored in the system."},
+  {"id": 246, "category": "admin", "domain_ar": "التفاعل والأتمتة", "domain_en": "Interaction and Automation", "ar": "دمج تقنيات (Translytical Task Flows) العصرية لبرمجة إجراءات تسمح للمستخدم بتحديث البيانات في قواعد النظام الخلفي من التقرير.", "en": "Integrate modern Translytical Task Flows techniques to program actions allowing users to write back data to backend systems from the report."},
+  {"id": 247, "category": "admin", "domain_ar": "التفاعل والأتمتة", "domain_en": "Interaction and Automation", "ar": "اربط لوحات التقرير بتطبيقات (Power Automate) لخلق مسارات عمل تفاعلية لتنبيه الإدارات عند اكتشاف تغييرات مالية طارئة.", "en": "Link report dashboards to Power Automate applications to create interactive workflows alerting departments upon detecting emergency financial changes."},
+  {"id": 248, "category": "admin", "domain_ar": "الهندسة الإضافية", "domain_en": "Additional Engineering", "ar": "اختبر خاصية فرز معلمات الحقول الثابتة (Persisted sorting) لتجنب اختلال الترتيب اللغوي عند اختيار المستخدم لمؤشرات متباينة.", "en": "Test the Persisted Sorting feature for field parameters to avoid linguistic order disruption when users select varying metrics."},
+  {"id": 249, "category": "admin", "domain_ar": "الهندسة الإضافية", "domain_en": "Additional Engineering", "ar": "راجع وتأكد من تحديث كافة أدوات وتوصيلات محرك قواعد البيانات المتطورة للمزودين الكبار (Google BigQuery, Snowflake) للنسخ التجريبية الجديدة.", "en": "Review and ensure updating all advanced database engine connectors for major providers (Google BigQuery, Snowflake) to new beta versions."},
+  {"id": 250, "category": "admin", "domain_ar": "الأمان الفائق", "domain_en": "Ultimate Security", "ar": "حدث خيارات القراءة والكتابة للبروتوكولات المعمارية (XMLA Endpoint) لتمكين استخدام أدوات الطرف الثالث القوية للتحرير والتأمين.", "en": "Update Read/Write options for XMLA Endpoint architectural protocols to enable the use of powerful third-party tools for editing and securing."},
+  {"id": 251, "category": "admin", "domain_ar": "الأمان الفائق", "domain_en": "Ultimate Security", "ar": "صمم خوادم ارتباطية وسيطة (Proxies) لتبادل المفاتيح التشفيرية ومنع تسربها داخل واجهة الأكواد المفتوحة למبرمجي لغة M للخصوصية.", "en": "Design intermediary proxy connection servers to exchange cryptographic keys and prevent them from leaking into the open code interface for M language developers for privacy."},
+  {"id": 252, "category": "admin", "domain_ar": "الأمان الفائق", "domain_en": "Ultimate Security", "ar": "قيد السماح الروتيني بدمج بيانات الأنظمة الداخلية (On-premises) ببيانات السحابة لمنع العبور غير الشرعي للمعلومات والخرائط الجغرافية السرية.", "en": "Restrict routine permission to merge on-premises internal system data with cloud data to prevent illegal crossing of confidential geographic information and maps."},
+  {"id": 253, "category": "admin", "domain_ar": "التميز التشغيلي", "domain_en": "Operational Excellence", "ar": "تأكد وتتبع مراقبة الحدود الحجمية لاشتراكات التراخيص الاحترافية (Pro) بسعتها 10 جيجابايت والممتازة لتفادي توقف محركات التحديث المؤسسية.", "en": "Ensure tracking and monitoring size limits for Pro license subscriptions (10GB capacity) and Premium to avoid stalling enterprise refresh engines."},
+  {"id": 254, "category": "admin", "domain_ar": "التميز التشغيلي", "domain_en": "Operational Excellence", "ar": "عين تنبيهات استباقية (Data Alerts) على مؤشرات الأداء الحيوية لتوجيه إنذار للإدارة العليا لحظة تدهور إيرادات المنتجات الأساسية.", "en": "Set proactive Data Alerts on vital KPIs to issue a warning to senior management the moment core product revenues deteriorate."},
+  {"id": 255, "category": "admin", "domain_ar": "التميز التشغيلي", "domain_en": "Operational Excellence", "ar": "استبدل الاعتماد المطلق والمشتت على المرفقات الورقية وملفات التقارير بإرسال روابط تحليلية مؤمنة مدمجة تماماً بمنصة الأعمال.", "en": "Replace absolute and distracting reliance on paper attachments and report files by sending secured analytical links fully integrated into the business platform."},
+  {"id": 256, "category": "admin", "domain_ar": "التقييم الدوري", "domain_en": "Periodic Assessment", "ar": "طبق محاكاة هجمات اختراق داخلية لمسارات وقيود RLS لضمان عدم وجود فجوات في رؤية رواتب وعوائد الموظفين في الفروع الإقليمية الأخرى.", "en": "Execute internal penetration attack simulations on RLS paths and restrictions to ensure no gaps exist in viewing employee salaries and returns in other regional branches."},
+  {"id": 257, "category": "admin", "domain_ar": "التقييم الدوري", "domain_en": "Periodic Assessment", "ar": "وثق خريطة الارتباطات البصرية والبنية التحتية لتسميات النظام في ملف توجيهي مخصص يمنع التشتت أثناء توارث صيانة النظام من قبل المهندسين اللاحقين.", "en": "Document the visual relationship map and system naming infrastructure in a dedicated guidance file preventing confusion while system maintenance is inherited by subsequent engineers."},
+  {"id": 258, "category": "admin", "domain_ar": "مهام متفرقة", "domain_en": "Miscellaneous Tasks", "ar": "وظف أدوات السكربتات المبرمجة داخل (Tabular Editor) لتنفيذ مهام تنسيق جماعية على مئات المقاييس الحسابية دفعة واحدة بدلاً من التعديل اليدوي المستنزف.", "en": "Employ programmable scripting tools inside Tabular Editor to execute mass formatting tasks on hundreds of calculated measures simultaneously instead of draining manual editing."},
+  {"id": 259, "category": "admin", "domain_ar": "مهام متفرقة", "domain_en": "Miscellaneous Tasks", "ar": "احصر وحجب قدرات استخراج تقارير بصيغة العرض الثابت (PDF) للأشخاص الذين لا يحوزون على التراخيص الكافية لتقليص استنزاف قوة وسعات الخدمة السحابية.", "en": "Limit and block the capability to extract fixed-view PDF reports for individuals who do not possess sufficient licenses to reduce draining cloud service power and capacities."},
+  {"id": 260, "category": "admin", "domain_ar": "مهام متفرقة", "domain_en": "Miscellaneous Tasks", "ar": "فعل خيارات الاعتماد المشترك لتوفير تدفقات بيانات (Dataflows) كمنصة مرجعية مستقلة يمكن لمحللي الأقسام الأخرى الاستناد إليها في أعمالهم المنفصلة.", "en": "Enable shared endorsement options to provide Dataflows as an independent reference platform that analysts from other departments can rely on in their separate work."},
+  {"id": 261, "category": "modeling", "domain_ar": "النمذجة الزمنية", "domain_en": "Time Modeling", "ar": "نفذ تحويلات هيكلية لتصحيح فترات السنوات المالية والتقويمات التنظيمية غير القياسية لتجنب إعطال دوال ذكاء الوقت الديناميكية المبنية مسبقاً.", "en": "Execute structural transformations to correct non-standard fiscal year periods and organizational calendars to avoid breaking pre-built dynamic time intelligence functions."},
+  {"id": 262, "category": "admin", "domain_ar": "المهام السردية", "domain_en": "Narrative Tasks", "ar": "وظف لغة M لضبط ومزامنة العناوين الفرعية المتغيرة ديناميكياً لتوفير إيضاح قاطع للمستخدم حول سياق ونطاق الفلترة المطبق حالياً على الشاشة المعروضة.", "en": "Employ M language to adjust and synchronize dynamically changing subtitles to provide definitive clarity to the user regarding the filter scope and context currently applied on the displayed screen."},
+  {"id": 263, "category": "admin", "domain_ar": "الموثوقية", "domain_en": "Reliability", "ar": "استعن بالتوقيعات الرقمية المعتمدة للتحقق من سلامة مصدر المرئيات المخصصة المستوردة لتجنب دمج إضافات غير موثوقة برمجياً في التقارير الحكومية الحساسة.", "en": "Utilize approved digital signatures to verify the source integrity of imported custom visuals to avoid integrating programmatically untrusted add-ins into sensitive government reports."},
+  {"id": 264, "category": "admin", "domain_ar": "الاستكشاف العميق", "domain_en": "Deep Exploration", "ar": "أدمج واجهات البرمجة المتقدمة للتحليل اللغوي والتنبؤ الزمني (عبر بايثون أو R) لدعم اللوحات التحليلية بمعطيات تعلم آلي فائقة التطور لاستشراف المستقبل.", "en": "Integrate advanced programming interfaces for linguistic analysis and time forecasting (via Python or R) to support analytical dashboards with highly advanced machine learning data to foresee the future."},
+  {"id": 265, "category": "admin", "domain_ar": "التقييم المستقبلي", "domain_en": "Future Assessment", "ar": "راجع الإجراءات والخصائص المعمارية بشكل متواتر شهرياً لمواكبة التحديثات الرقمية المتتالية لنظام ذكاء الأعمال والتأكد من مطابقة التطوير لمعايير الكفاءة المهنية العالمية.", "en": "Review architectural procedures and properties iteratively every month to keep pace with successive digital updates to the BI system and ensure development matches global professional competency standards."},
+  {"id": 266, "category": "admin", "domain_ar": "الدعم اللغوي", "domain_en": "Linguistic Support", "ar": "فعل وخصص قواميس (Q&A) الاصطلاحية لتعليم محركات التحليل المفردات والتراكيب اللغوية الدقيقة المتعارف عليها حصرياً ضمن أروقة المكاتب الداخلية للمنظمة.", "en": "Enable and customize terminology Q&A dictionaries to teach analytical engines the precise vocabulary and linguistic structures conventionally recognized exclusively within the organization's internal offices."},
+  {"id": 267, "category": "admin", "domain_ar": "التكامل الهندسي", "domain_en": "Engineering Integration", "ar": "استخرج مقاييس التدفق التنافسية ورتبها في فضاء منفصل يسهل التقاطه أو نسخها لمساندة عروض الإدارة في منصات وملفات اجتماعات التقييم الدورية الربعية.", "en": "Extract competitive flow metrics and arrange them in a separate space easily captured or copied to support management presentations in periodic quarterly evaluation meeting files and platforms."},
+  {"id": 268, "category": "admin", "domain_ar": "الأداء الزمني", "domain_en": "Time Performance", "ar": "راجع مهل فترات الانقطاع للخدمة، وحدد استراتيجيات استكمال التحديث عبر برمجيات ذكية تتابع عمليات التحميل من آخر نقطة انقطاع موثقة دون إعادة المهام بالكامل.", "en": "Review service outage timeout limits, and define strategies to resume refresh via smart software that tracks load operations from the last documented interruption point without completely restarting tasks."},
+  {"id": 269, "category": "admin", "domain_ar": "التوافقية", "domain_en": "Compatibility", "ar": "اختبر التوافق العكسي لنماذج النشر الدلالية عند التحديث لنسخ جديدة من البرنامج المكتبي لتأمين استمرار تدفق البيانات للتقارير التنفيذية المصممة قبل سنوات طويلة.", "en": "Test backward compatibility of semantic deployment models when updating to new desktop program versions to ensure continuous data flow for executive reports designed many years ago."},
+  {"id": 270, "category": "admin", "domain_ar": "الجودة", "domain_en": "Quality", "ar": "ادمج جداول التواريخ في النماذج بشكل مركزي، وامسح جميع المراجع الذاتية الزمنية لتقليص أخطاء الحساب العرضية الناتجة عن تعدد مؤشرات القراءة الزمنية في النماذج الضخمة.", "en": "Centrally integrate Date tables into models, and wipe all temporal self-references to shrink accidental calculation errors resulting from multiple time-reading pointers in massive models."},
+  {"id": 271, "category": "admin", "domain_ar": "الصيانة", "domain_en": "Maintenance", "ar": "رتب أولويات العمليات وجداول التحديث التلقائي بناءً على القيمة الاستراتيجية للبيانات، مقدمًا البيانات التشغيلية الآنية على التقارير التاريخية الأرشيفية للشركة.", "en": "Prioritize operations and auto-refresh schedules based on the strategic value of data, prioritizing real-time operational data over the company's archival historical reports."},
+  {"id": 272, "category": "admin", "domain_ar": "الأمان الجانبي", "domain_en": "Peripheral Security", "ar": "قيد التبليغات البريدية المزعجة للإيميلات من النظام الأساسي، وحصرها بالأخطاء الحرجة فقط لتوفير بيئة هادئة تسمح للمطورين بالتركيز العميق في هندسة البيانات وإصلاحها.", "en": "Restrict annoying email spam notifications from the core system, limiting them to critical errors only to provide a quiet environment allowing developers to focus deeply on data engineering and repair."},
+  {"id": 273, "category": "visualization", "domain_ar": "تفاصيل الواجهة", "domain_en": "Interface Details", "ar": "عين القيم الافتراضية للفلاتر الاستراتيجية لضمان ظهور معلومات جوهرية للمستخدم فور فتح واجهة التقرير، بدلاً من إظهار لوحة إجمالية ضبابية وفارغة من الرؤى القابلة للتطبيق.", "en": "Set Default Values for strategic filters to ensure core information appears to the user the moment the report interface opens, rather than showing a blurry aggregate dashboard devoid of actionable insights."},
+  {"id": 274, "category": "visualization", "domain_ar": "تفاصيل الواجهة", "domain_en": "Interface Details", "ar": "استبدل الاعتماد على شروح الإدارات التقليدية للمخرجات بلوحات مركزية قادرة على تفسير نفسها تلقائياً وتزويد المحاسب بالتفاصيل الاستثنائية بلمسة زر سريعة وواثقة.", "en": "Replace reliance on traditional departmental explanations of outputs with central dashboards capable of explaining themselves automatically and providing the accountant with exceptional details with a quick, confident button click."},
+  {"id": 275, "category": "admin", "domain_ar": "الفحص المؤسسي", "domain_en": "Enterprise Inspection", "ar": "استمر في تقييم تكلفة استهلاك حوسبة مساحات (Premium) والتحول لاستخدم بدائل الترقية الجزئية في أوقات الضغط العالي للتوفير الفعلي في الميزانيات المخصصة للمعلوماتية.", "en": "Continuously evaluate Premium capacity computing consumption cost and shift to using partial upgrade alternatives during high-pressure times for actual savings in IT budgets."},
+  {"id": 276, "category": "admin", "domain_ar": "الاستقرار المعماري", "domain_en": "Architectural Stability", "ar": "طبق تقنيات الفهرسة العكسية لاختبار تداخلات الفهارس في عمليات الجداول التزايدية لحماية قواعد بيانات المستودع الأساسية من تضخم التكرارات وإتلاف النسخ الاحتياطية المعتمدة.", "en": "Apply reverse indexing techniques to test index intersections in incremental table operations to protect primary warehouse databases from duplicate inflation and corrupting approved backups."},
+  {"id": 277, "category": "admin", "domain_ar": "المراقبة الصارمة", "domain_en": "Strict Monitoring", "ar": "اعتمد استراتيجية التحذير المسبق، عبر إرسال دلائل إرشادية تلقائية للمستخدمين الجدد فور انضمامهم للمنصة وشرح قواعد تبادل التقارير وعدم إخراجها عن سياقها الأمني المغلق تماماً.", "en": "Adopt a pre-warning strategy by sending automated guidebooks to new users upon joining the platform, explaining report sharing rules and forbidding taking them outside their completely closed security context."},
+  {"id": 278, "category": "admin", "domain_ar": "التحكم بالتحويلات", "domain_en": "Transformation Control", "ar": "صمم رسائل توجيهية (Tooltips) تتفاعل فقط كمساعدات منقذة حينما تقرأ الخوارزميات أن المستخدم قد فعل تشكيلة تصفية خاطئة وتؤدي لظهور نتائج إحصائية مضللة وفارغة من المعنى الحقيقي.", "en": "Design Tooltips that trigger only as rescuing aids when algorithms read that the user has applied a wrong filter combination leading to deceptive statistical results devoid of true meaning."},
+  {"id": 279, "category": "admin", "domain_ar": "الامتثال المستمر", "domain_en": "Continuous Compliance", "ar": "حدد تواريخ صلاحية لروابط وتطبيقات التقارير الاستثنائية الممنوحة لمراجعي التدقيق الخارجيين لإسقاط الأهلية الآلية فور انتهاء عقود ومسؤوليات المراجعة المالية المقررة قانونياً ورسمياً.", "en": "Set Expiration Dates for exceptional report links and apps granted to external audit reviewers to automatically drop eligibility immediately upon the end of legally and officially mandated financial audit contracts and responsibilities."},
+  {"id": 280, "category": "admin", "domain_ar": "هندسة النشر المتقدم", "domain_en": "Advanced Deployment Engineering", "ar": "استعرض خريطة البيانات الكاملة في الخدمة السحابية كخطوة احترازية نهائية لتأكيد سلامة كل الخطوات والارتباطات المنطقية قبل منح إذن وتصريح تدشين ومشاركة المنتج التحليلي الفائق للجمهور المعني.", "en": "Review the full Data Map in the Cloud Service as a final precautionary step to confirm the integrity of all steps and logical links before granting permission and clearance to launch and share the ultimate analytical product to the concerned public."},
+  {"id": 281, "category": "admin", "domain_ar": "استرداد البيانات", "domain_en": "Data Recovery", "ar": "فعّل آليات النسخ الاحتياطي للمشاريع الكبرى باستخدام تنسيقات الاسترداد لتأمين مجهود المطورين من الضياع الناتج عن أخطاء الحفظ الموضعي المفاجئة.", "en": "Activate backup mechanisms for major projects using recovery formats to secure developer effort from loss resulting from sudden local save errors."},
+  {"id": 282, "category": "admin", "domain_ar": "إدارة التزامن", "domain_en": "Concurrency Management", "ar": "اضبط إعدادات مهام (Gateway) الجدولة التزامنية بدقة لمنع تضارب طلبات تحديث الجداول الضخمة المتتابعة وحصول تكدس مروري للاستعلامات المرفوعة للسيرفرات المركزية.", "en": "Precisely tune synchronous scheduling Gateway task settings to prevent clashing subsequent massive table refresh requests and causing a traffic jam of queries sent to central servers."},
+  {"id": 283, "category": "visualization", "domain_ar": "تحسينات القراءة", "domain_en": "Readability Improvements", "ar": "استخدم خلفيات تباين لوني مدروسة بعناية ضمن نظام المخططات البيانية الكبرى لدعم ميزة القراءة المريحة للشاشات الكبيرة الخاصة بصالات الاجتماعات التنفيذية وغرف المراقبة المركزية.", "en": "Use carefully studied color contrast backgrounds within the major charting system to support comfortable readability for large screens specific to executive meeting halls and central control rooms."},
+  {"id": 284, "category": "admin", "domain_ar": "المتابعة الفورية", "domain_en": "Real-time Monitoring", "ar": "اربط التقارير الاستراتيجية للتحليل الآني بتطبيقات التدفق المباشر للبيانات (Streaming Datasets) لعرض أرقام الحضور والفعاليات اللحظية بمرونة فائقة الاستجابة ومنعدمة التأخير تقريباً.", "en": "Link real-time analytical strategic reports to Streaming Datasets applications to display live attendance and event numbers with ultra-responsive, virtually zero-latency flexibility."},
+  {"id": 285, "category": "admin", "domain_ar": "الاستقطاب الفكري", "domain_en": "Intellectual Brainstorming", "ar": "خصص جلسات حوارية للمستخدمين لجمع تقييماتهم واستدراك أي ثغرات أو مطالبات لدمج وتصميم مؤشرات أداء نوعية لم تخطر ببال مهندسي النظام خلال المراحل التأسيسية للمشروع.", "en": "Dedicate dialogue sessions for users to gather their evaluations and catch any gaps or demands to integrate and design qualitative KPIs that did not cross the minds of system engineers during the project's foundational phases."},
+  {"id": 286, "category": "admin", "domain_ar": "التفريغ المعماري", "domain_en": "Architectural Offloading", "ar": "فرغ البيانات المحسوبة دورياً ومؤقتاً للتدقيق المحاسبي المتقاطع الذي يهدف لاعتماد صحة الحوسبة الافتراضية والمنطق التعبيري المطبق على الأرقام الكبيرة والمعقدة داخلياً في جداول البيانات.", "en": "Temporarily and periodically offload calculated data for cross-accounting auditing aimed at certifying the validity of virtual computing and expressive logic applied to large and complex numbers internally in data tables."},
+  {"id": 287, "category": "admin", "domain_ar": "الفحص الموازي", "domain_en": "Parallel Inspection", "ar": "استخرج مسارات التنفيذ وتأكد من تطبيق جميع الحسابات الخفية دون إحداث انحراف معياري واسع يؤثر على مصداقية الأرقام الختامية المقدمة للسلطات الضريبية وهيئات الرقابة التشريعية الخارجية.", "en": "Extract Execution Plans and ensure all hidden calculations are applied without causing a wide standard deviation that affects the credibility of final numbers presented to tax authorities and external legislative oversight bodies."},
+  {"id": 288, "category": "admin", "domain_ar": "التشخيص المترابط", "domain_en": "Interconnected Diagnostics", "ar": "صمم لوحات اختبارية محاكاة تعيد توليد نفس الشروط والظروف الفلترية الحرجة لمراقبة أداء محركات التحليل وتقييم صمود السيرفرات السحابية أمام أوقات الذروة واختناقات الاستهلاك المؤسسي العام.", "en": "Design simulated testing dashboards reproducing the same critical filtering conditions and circumstances to monitor analytical engine performance and evaluate cloud server resilience against peak times and general corporate consumption bottlenecks."},
+  {"id": 289, "category": "admin", "domain_ar": "الاستجابة للتغذية", "domain_en": "Feedback Response", "ar": "راقب ردود أفعال المستخدمين المباشرة من خلال تقييماتهم للوحات واستخدم ميزات الإبلاغ الفوري لاصطياد الأخطاء التصميمية والمنطقية باكراً وإصلاحها قبل تفاقمها وإحداثها إرباكاً إدارياً واسعاً في الأقسام المتأثرة.", "en": "Monitor users' direct reactions through their dashboard ratings and utilize instant reporting features to hunt down design and logical errors early and fix them before they escalate and cause broad administrative confusion in affected departments."},
+  {"id": 290, "category": "admin", "domain_ar": "الامتياز التحليلي", "domain_en": "Analytical Excellence", "ar": "استهدف دائماً تحويل المخرجات الإحصائية المبهمة في المنصة من مجرد عرض تقريري متكلس إلى نظام إرشادي تفاعلي مدعوم بتوضيحات آلية تفسر الأرقام، ترشد القرار، وتحول المعلومة الجامدة لحكمة تنظيمية قابلة للتنفيذ القاطع.", "en": "Always aim to transform obscure statistical outputs in the platform from a mere calcified reporting display into an interactive guiding system supported by automated explanations that interpret numbers, guide decisions, and turn rigid information into decisive, executable organizational wisdom."},
+  {"id": 291, "category": "dax", "domain_ar": "تحسين DAX المتقدم", "domain_en": "Advanced DAX Optimization", "ar": "استبدل الدوال الوظيفية بطيئة التنفيذ كدالة EARLIER العتيقة بمتغيرات مساعدة سريعة ومعاصرة لضمان تلبية معايير كتابة الأكواد الآمنة والخالية من استنزاف الموارد الحسابية.", "en": "Replace slow-executing functional formulas like the obsolete EARLIER function with fast and modern helper variables to ensure meeting safe code writing standards free from computational resource drain."},
+  {"id": 292, "category": "visualization", "domain_ar": "ضبط التفاعل المباشر", "domain_en": "Direct Interaction Tuning", "ar": "اختبر وتأكد من عمل أزرار الاستكشاف المتعمق (Drill-through) على جميع مستويات هرميات الأبعاد لضمان انسيابية انتقال المسؤولين بين ملخص الأرباح والفواتير التفصيلية بدون تعطل يذكر.", "en": "Test and verify Drill-through exploration buttons work across all levels of dimension hierarchies to ensure smooth transition for officials between the profit summary and detailed invoices with negligible downtime."},
+  {"id": 293, "category": "admin", "domain_ar": "التحقق من صحة القواميس", "domain_en": "Dictionary Validation", "ar": "تأكد من تعيين وحفظ القيم الافتراضية لمحددات القواميس الجغرافية لمنع انهيار الخرائط المرئية عند إضافة مواقع ومدن جديدة غير معرفة مسبقاً في إعدادات تصنيف الفئات الجغرافية والمكانية.", "en": "Ensure defining and saving default values for geographical dictionary parameters to prevent visual maps from collapsing when adding new, previously undefined locations and cities in geographic and spatial category classification settings."},
+  {"id": 294, "category": "admin", "domain_ar": "ترقية الأطر", "domain_en": "Framework Upgrades", "ar": "حدث برامج التشغيل الجدارية (ODBC) والتوصيلات الخلفية باستمرار لضمان توافق الاتصال بين البيئات المحلية وأنظمة Power BI المستضافة على الحوسبة السحابية دون عقبات أمنية أو انقطاعات بيانات.", "en": "Continuously update firewall drivers (ODBC) and backend connectors to ensure connection compatibility between on-premises environments and cloud-hosted Power BI systems without security obstacles or data interruptions."},
+  {"id": 295, "category": "admin", "domain_ar": "الحوكمة التشاركية", "domain_en": "Collaborative Governance", "ar": "قيد واجعل ميزات التصريح التلقائي لمشاركة اللوحات مرهونة بموافقات استثنائية للإدارات الرقابية لحجب التفاصيل الدقيقة عن فرق العمل المقاولة أو الموارد البشرية المؤقتة للمقاولين الخارجيين.", "en": "Restrict and make automatic dashboard sharing permission features contingent upon exceptional approvals from supervisory departments to block granular details from contracting work teams or temporary human resources of external contractors."},
+  {"id": 296, "category": "visualization", "domain_ar": "التموضع البصري", "domain_en": "Visual Positioning", "ar": "رتب المحاذاة الشديدة للمرئيات المتعددة بالاستفادة العظمى من خصائص المحاذاة التلقائية وخيارات توزيع المسافات بشكل متساوٍ بين المخططات والبطاقات لتشكيل مظهر هندسي احترافي يخلو من الميل أو النشاز.", "en": "Arrange the strict alignment of multiple visuals by maximizing the use of automatic alignment properties and equal spacing distribution options between charts and cards to form a professional geometric appearance free of tilt or discord."},
+  {"id": 297, "category": "admin", "domain_ar": "تحسين الروابط", "domain_en": "Link Optimization", "ar": "دقق عناوين وتوجيهات أزرار الروابط الخارجية المدرجة ضمن تقارير النظام للتأكد من عدم احتوائها على مسارات تقود لصفحات إلكترونية داخلية ملغاة أو وثائق تم سحبها من التداول الإداري الرسمي والتنظيمي.", "en": "Audit URLs and directions of external link buttons embedded within system reports to ensure they do not contain paths leading to canceled internal web pages or documents withdrawn from official and organizational administrative circulation."},
+  {"id": 298, "category": "etl", "domain_ar": "هندسة البيانات المعكوسة", "domain_en": "Reverse Data Engineering", "ar": "استخدم دوال الدمج والتفريق في معالجات Power Query لضمان تحويل البيانات الاستثنائية ذات القوالب الغريبة الواردة من شركاء خارجيين وتنميطها ضمن هياكل المنظمة الموحدة وقواعدها الصارمة للتحليل والإدخال المعياري.", "en": "Use Merge and Split functions in Power Query processes to ensure transforming exceptional data with strange templates received from external partners and standardizing them within the organization's unified structures and strict rules for standard analysis and entry."},
+  {"id": 299, "category": "visualization", "domain_ar": "الاستيعاب البياني", "domain_en": "Data Assimilation", "ar": "راجع التنسيقات الرقمية وتأكد من تطبيق الفواصل الخاصة بالملايين (الآلاف) عبر النظام أجمع في جداول المصفوفات لتسريع قدرة قراءة الرقم بمجرد النظر السريع، وإعطاء صورة احترافية ودقيقة للمتلقي.", "en": "Review numeric formatting and ensure the application of millions (thousands) separators across the entire system in Matrix tables to accelerate the ability to read the number with a quick glance, and provide a professional and accurate image to the recipient."},
+  {"id": 300, "category": "admin", "domain_ar": "ضمان الاستمرارية", "domain_en": "Continuity Assurance", "ar": "اعتمد منهجية النسخ والتصنيف الآلي للبيانات في جداول مستقلة مؤقتاً لتجنب إيقاف الخدمة الحية عن المستخدمين أثناء إجراء ترقيات صيانة رئيسية للواجهات الأمامية والمؤشرات المستهلكة في الشاشات العرضية.", "en": "Adopt a methodology of copying and classifying data into temporarily independent tables to avoid taking the live service offline for users while executing major maintenance upgrades to frontend interfaces and metrics consumed in display screens."},
+  {"id": 301, "category": "modeling", "domain_ar": "التحقق الدلالي", "domain_en": "Semantic Validation", "ar": "تأكد من تحديد نوع البيانات بدقة عالية (وقت، تاريخ، مساحة، عملة) لمنع محركات ذكاء الأعمال المدمجة من إساءة قراءة المدخلات وتقديم اقتراحات لأسئلة استكشافية مضللة وخالية من القيمة الفنية والفعلية.", "en": "Ensure setting the Data Type with high precision (time, date, area, currency) to prevent built-in BI engines from misreading inputs and providing deceptive exploratory question suggestions devoid of technical and actual value."},
+  {"id": 302, "category": "visualization", "domain_ar": "توحيد الخطوط والرموز", "domain_en": "Font and Icon Standardization", "ar": "راجع وتأكد من تثبيت نمط الخطوط الرئيسية لكافة واجهات التقرير لتجنب الازدواجية البصرية التي تنتج غالباً من دمج صفحات طورها مبرمجون متعددون في أوقات متباينة وخلفيات بصرية وتنظيمية لا تتسق بشكل دقيق.", "en": "Review and verify standardizing the main font style for all report interfaces to avoid visual duplication that often results from merging pages developed by multiple programmers at different times and with inaccurately matching visual and organizational backgrounds."},
+  {"id": 303, "category": "admin", "domain_ar": "تعزيز الموثوقية التنبئية", "domain_en": "Predictive Reliability Enhancement", "ar": "فعل خيارات التنبؤ المستقبلية المبنية على الانحدار الخطي والمدمجة داخل المخططات الخطية لإعطاء رؤساء الإدارات القدرة على قراءة مؤشرات الطلب الاستهلاكي قبل وقوع الأزمات المتعلقة بالمخزون والمواد التشغيلية للشركة.", "en": "Enable future forecasting options built on Linear Regression integrated within Line charts to give department heads the ability to read consumer demand indicators before crises related to company inventory and operational materials occur."},
+  {"id": 304, "category": "admin", "domain_ar": "التكيف مع الإقراض", "domain_en": "Lending Adaptation", "ar": "احسب مسارات المتغيرات التضخمية للأسعار وفروق العملات عن طريق دوال ربط حية تستورد أسعار الصرف الآنية لتقويم القيم المالية النهائية لتقارير الموازنات الدولية والإقليمية وعرض النتائج بقيمة موحدة قياسية وصحيحة.", "en": "Calculate trajectories of inflationary price variables and currency differences via live linking functions that import real-time exchange rates to evaluate final financial values for international and regional budget reports and display results in a unified, standard, and correct value."},
+  {"id": 305, "category": "visualization", "domain_ar": "الحفظ والاستعادة السريعة", "domain_en": "Quick Save and Restore", "ar": "استخدم أزرار التنقل الخلفية المبرمجة بالإشارات المرجعية لمنح المستخدم مساراً واضحاً لإلغاء جميع خيارات التصفية المعقدة بنقرة واحدة وتصفير اللوحة بدلاً من محاولة تذكر خياراته وفك التقاطعات يدوياً وبطريقة مزعجة.", "en": "Use Back navigation buttons programmed with Bookmarks to grant the user a clear path to cancel all complex filtering options with one click and reset the dashboard instead of trying to remember their choices and untangling intersections manually and annoyingly."},
+  {"id": 306, "category": "admin", "domain_ar": "إدارة فترات السماح", "domain_en": "Grace Period Management", "ar": "حدد وصمم لوحات إدارية تقيس وتقيم نسب التأخير والتسليم للرد على طلبات ومشاكل العملاء باستخدام دوال فروق التواريخ المعقدة التي تتجاهل أيام العطل والإجازات الرسمية للموظفين لضمان عدالة التقييم الإنتاجي الفعلي بدقة تامة.", "en": "Determine and design administrative dashboards that measure and evaluate delay and delivery rates to respond to client requests and problems using complex Date Difference functions that ignore official employee holidays and weekends to ensure complete fairness in actual productivity evaluation."},
+  {"id": 307, "category": "admin", "domain_ar": "الإدارة المتكاملة للمشاريع", "domain_en": "Integrated Project Management", "ar": "ادمج مخططات الجانت (Gantt Charts) المتخصصة والمحسنة عبر المرئيات المخصصة لتتبع دورات حياة وسير مهام المشاريع التشغيلية، ومراقبة الاختناقات الجدولية بفعالية شديدة لمديري المكاتب التنفيذية والتحليلية الاستراتيجية في المؤسسات.", "en": "Integrate specialized and improved Gantt Charts via Custom Visuals to track the lifecycles and workflow of operational project tasks, and highly effectively monitor scheduling bottlenecks for executive and strategic analytical office managers in enterprises."},
+  {"id": 308, "category": "admin", "domain_ar": "التأكد من سلاسل التوريد", "domain_en": "Supply Chain Verification", "ar": "استخدم أدوات تحليل الشبكات الانسيابية ومخططات سانكي (Sankey Diagrams) لتصوير مسارات التدفقات النقدية والمخزونية بين الفروع وتتبع نقط التكدس التي تسببت بخنق الأرباح وتشويه التوريدات الكلية للمصانع والشبكات المنتجة.", "en": "Use flow network analysis tools and Sankey Diagrams to visualize cash and inventory flow paths between branches and track congestion points that caused profit strangulation and distortion of overall supplies to factories and producing networks."},
+  {"id": 309, "category": "admin", "domain_ar": "استقصاء الشذوذ الرقمي", "domain_en": "Digital Anomaly Investigation", "ar": "فعل ميزة اكتشاف القيم المتطرفة والشذوذ (Anomaly Detection) المدعومة بخوارزميات ذكاء اصطناعي، وتسخيرها لتنبيه المراجع المالي للمبيعات التي قفزت أو هبطت بشكل يكسر مسار ونمط التذبذب الموسمي الآمن والمتوقع في الدورة المالية.", "en": "Enable the Anomaly Detection feature supported by AI algorithms, and harness it to alert the financial auditor to sales that jumped or dropped in a way that breaks the safe and expected seasonal fluctuation pattern and path in the financial cycle."},
+  {"id": 310, "category": "admin", "domain_ar": "إرشاد البيانات التفاعلي", "domain_en": "Interactive Data Guidance", "ar": "أنشئ نماذج تفاعلية تستعرض الإشعارات الاستباقية لتغيير التوقعات الاقتصادية بشكل سريع لضمان تحضير الفرق اللوجستية وتأمين الموارد التشغيلية اللازمة للتعامل مع الارتفاع المفاجئ لمؤشرات الحجوزات والطلبيات عبر الفضاء السحابي والتحليلي الحي.", "en": "Create interactive models that display proactive notifications of rapid economic expectation changes to ensure logistics teams prepare and secure the operational resources necessary to deal with a sudden spike in booking and order indicators across the cloud and live analytical space."}
+       ];
+
+        // UI Translations
+        const i18n = {
+            ar: {
+                navTitle: "مراجعة Power BI",
+                heroTitle: "التقرير المعماري لبيئات ذكاء الأعمال",
+                heroSubtitle: "إطار عمل مرجعي متكامل لتقييم ومراجعة دورة حياة البيانات",
+                searchPlaceholder: "ابحث في المهام...",
+                progressText: "معدل الإنجاز",
+                emptyState: "لا توجد نتائج مطابقة للبحث.",
+                markAll: "تحديد الكل",
+                markNone: "إلغاء التحديد",
+                categories: {
+                            "etl": "هندسة البيانات وتحويلها (ETL)",
+                            "modeling": "النمذجة المعمارية وتحسين مساحة الذاكرة",
+                            "dax": "ديناميكيات التعبيرات التحليلية (DAX)",
+                            "visualization": "التصور المرئي وتحليل البيانات (Visuals)", // جديد
+                            "admin": "الإدارة السحابية وأدوات التحكم (Admin)" // جديد
+                        }
+
+            },
+            en: {
+                navTitle: "Power BI Checklist",
+                heroTitle: "BI Environments Architectural Report",
+                heroSubtitle: "Integrated reference framework to evaluate data lifecycle",
+                searchPlaceholder: "Search tasks...",
+                progressText: "Progress Rate",
+                emptyState: "No matching results found.",
+                markAll: "Mark All",
+                markNone: "Unmark All",
+                categories: {
+                    "etl": "Data Engineering & Transformation (ETL)",
+                    "modeling": "Data Modeling & Memory Optimization",
+                    "dax": "Data Analysis Expressions (DAX)",
+                    "visualization": "Data Visualization & Analysis", // جديد
+                    "admin": "Cloud Administration & Governance" // جديد
+                }
+}
+        };
+
+        // ==========================================
+        // 2. State Management
+        // ==========================================
+        let currentLang = 'ar';
+        let currentTheme = 'light';
+        let completedItems = JSON.parse(localStorage.getItem('pbi_completed')) || [];
+
+        // ==========================================
+        // 3. Initialization
+        // ==========================================
+        window.onload = () => {
+            // Remove Loader
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 600);
+
+            // Load saved theme
+            if (localStorage.getItem('pbi_theme') === 'dark') {
+                toggleTheme();
+            }
+
+            renderApp();
+            updateProgress();
+        };
+
+        // ==========================================
+        // 4. Rendering Engine
+        // ==========================================
+        function renderApp(searchQuery = '') {
+            const container = document.getElementById('checklist-container');
+            container.innerHTML = '';
+            let hasResults = false;
+
+            // Group items by category
+            const categories = ['etl', 'modeling', 'dax', 'visualization', 'admin'];
+            
+            categories.forEach(catKey => {
+                // Filter items for this category + search query
+                const catItems = itemsData.filter(item => {
+                    const text = currentLang === 'ar' ? item.ar : item.en;
+                    const domain = currentLang === 'ar' ? item.domain_ar : item.domain_en;
+                    const matchesSearch = text.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                          domain.toLowerCase().includes(searchQuery.toLowerCase());
+                    return item.category === catKey && matchesSearch;
+                });
+
+                if (catItems.length > 0) {
+                    hasResults = true;
+                    
+                    // Create Section Wrapper
+                    const section = document.createElement('div');
+                    section.className = 'section active'; // Default open
+
+                    // Section Header
+                    const header = document.createElement('div');
+                    header.className = 'section-header';
+                    header.innerHTML = `
+                        <h3>${i18n[currentLang].categories[catKey]} <span style="font-size:0.8rem; color:var(--text-secondary)">(${catItems.length})</span></h3>
+                        <div class="chevron">▼</div>
+                    `;
+                    header.onclick = () => section.classList.toggle('active');
+                    
+                    // Section Body
+                    const body = document.createElement('div');
+                    body.className = 'section-body';
+
+                    // Add Items
+                    catItems.forEach(item => {
+                        const isCompleted = completedItems.includes(item.id);
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = `item ${isCompleted ? 'completed' : ''}`;
+                        itemDiv.onclick = () => toggleItem(item.id, itemDiv);
+
+                        const text = currentLang === 'ar' ? item.ar : item.en;
+                        const domain = currentLang === 'ar' ? item.domain_ar : item.domain_en;
+
+                        itemDiv.innerHTML = `
+                            <div class="checkbox"></div>
+                            <div class="item-text">
+                                <span class="item-domain">${domain}</span>
+                                <p>${text}</p>
+                            </div>
+                        `;
+                        body.appendChild(itemDiv);
+                    });
+
+                    section.appendChild(header);
+                    section.appendChild(body);
+                    container.appendChild(section);
+                }
+            });
+
+            // Handle Empty State
+            document.getElementById('empty-state').style.display = hasResults ? 'none' : 'block';
+        }
+
+        // ==========================================
+        // 5. Interactivity Logic
+        // ==========================================
+        function toggleItem(id, element) {
+            const index = completedItems.indexOf(id);
+            if (index > -1) {
+                completedItems.splice(index, 1); // Remove
+                element.classList.remove('completed');
+            } else {
+                completedItems.push(id); // Add
+                element.classList.add('completed');
+            }
+            // Save & Update
+            localStorage.setItem('pbi_completed', JSON.stringify(completedItems));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = itemsData.length;
+            const completed = completedItems.length;
+            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+            // Animate Progress Bar
+            document.getElementById('progress-fill').style.width = `${percentage}%`;
+            
+            // Animate Counter
+            const countEl = document.getElementById('progress-percentage');
+            animateValue(countEl, parseInt(countEl.innerText) || 0, percentage, 800);
+        }
+
+        // Search Listener
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            renderApp(e.target.value);
+        });
+
+        // Mark All / Unmark All
+        document.getElementById('mark-all-btn').addEventListener('click', (e) => {
+            if (completedItems.length === itemsData.length) {
+                completedItems = []; // Unmark all
+                e.target.innerText = i18n[currentLang].markAll;
+            } else {
+                completedItems = itemsData.map(i => i.id); // Mark all
+                e.target.innerText = i18n[currentLang].markNone;
+            }
+            localStorage.setItem('pbi_completed', JSON.stringify(completedItems));
+            renderApp(document.getElementById('search-input').value);
+            updateProgress();
+        });
+
+        // ==========================================
+        // 6. Theme & Language Toggles
+        // ==========================================
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (currentTheme === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                currentTheme = 'dark';
+                document.getElementById('theme-toggle').innerText = '☀️';
+            } else {
+                html.removeAttribute('data-theme');
+                currentTheme = 'light';
+                document.getElementById('theme-toggle').innerText = '🌙';
+            }
+            localStorage.setItem('pbi_theme', currentTheme);
+        }
+
+        document.getElementById('lang-toggle').addEventListener('click', () => {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            
+            // Update HTML direction
+            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.documentElement.setAttribute('lang', currentLang);
+            
+            // Update button text
+            document.getElementById('lang-toggle').innerText = currentLang === 'ar' ? 'English' : 'عربي';
+            
+            // Update static UI text
+            document.getElementById('nav-title').innerText = i18n[currentLang].navTitle;
+            document.getElementById('hero-title').innerText = i18n[currentLang].heroTitle;
+            document.getElementById('hero-subtitle').innerText = i18n[currentLang].heroSubtitle;
+            document.getElementById('search-input').placeholder = i18n[currentLang].searchPlaceholder;
+            document.getElementById('progress-text').innerText = i18n[currentLang].progressText;
+            document.getElementById('empty-state').innerText = i18n[currentLang].emptyState;
+            
+            // Update Mark All text
+            const btn = document.getElementById('mark-all-btn');
+            if (completedItems.length === itemsData.length) {
+                btn.innerText = i18n[currentLang].markNone;
+            } else {
+                btn.innerText = i18n[currentLang].markAll;
+            }
+
+            // Re-render items
+            renderApp(document.getElementById('search-input').value);
+        });
+
+        // ==========================================
+        // 7. Helper: Counter Animation & Scroll
+        // ==========================================
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start) + "%";
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Back to top behavior
+        const backToTopBtn = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+// وظيفة التنقل السريع وتحديث الحالة النشطة
+document.querySelectorAll('.nav-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+        const targetId = dot.getAttribute('data-target');
+        // البحث عن أول قسم يحمل هذه الفئة
+        const targetSection = Array.from(document.querySelectorAll('.section'))
+            .find(sec => {
+                const headerText = sec.querySelector('h3').innerText;
+                // نتحقق من مطابقة النص أو وجود العناصر التابعة للفئة
+                return sec.innerHTML.toLowerCase().includes(targetId);
+            });
+
+        if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // فتح القسم إذا كان مغلقاً
+            targetSection.classList.add('active');
+        }
+    });
+});
+
+// تحديث الأيقونة النشطة أثناء السكرول
+window.addEventListener('scroll', () => {
+    let current = "";
+    const sections = document.querySelectorAll('.section');
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (pageYOffset >= sectionTop - 200) {
+            // محاولة استنتاج الفئة من المحتوى (بناءً على أول آي دي في القسم)
+            const firstItem = section.querySelector('.item');
+            if(firstItem) {
+                // نبحث عن بيانات العنصر الأول في هذه المجموعة
+                const id = parseInt(firstItem.onclick.toString().match(/\d+/)[0]);
+                const dataItem = itemsData.find(i => i.id === id);
+                if(dataItem) current = dataItem.category;
+            }
+        }
+    });
+
+    document.querySelectorAll('.nav-dot').forEach(dot => {
+        dot.classList.remove('active');
+        if (dot.getAttribute('data-target') === current) {
+            dot.classList.add('active');
+        }
+    });
+});
+    </script>
+</body>
+</html>
